@@ -1,5 +1,5 @@
 
-package vectors;
+package com.physicsEngine.vectors;
 
 public class Vector2{
  
@@ -18,4 +18,6 @@ public class Vector2{
  public static Vector2 sum(Vector2 a,Vector2 b){return new Vector2(a.x + b.x,a.y + b.y);}
  //this is used to devide two vector2
  public static Vector2 devide(Vector2 a,Vector2 b){return new Vector2(a.x / b.x,a.y / b.y);}
+ //this is used to suptract two vector2
+ public static Vector2 subtract(Vector2 a,Vector2 b){return new Vector2(a.x - b.x,a.y - b.y);}
 }

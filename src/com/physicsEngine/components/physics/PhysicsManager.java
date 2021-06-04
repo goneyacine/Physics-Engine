@@ -1,9 +1,11 @@
 
-package components.physics;
+package com.physicsEngine.components.physics;
 
 public class PhysicsManager {
 
+    //delta time is the time between physics frames  
 	private static float deltaTime = 1f/60f;
+	//this control the speed of physics movements
 	private static float timeSpeed = 1f;
 
 	public static void setDeletaTime(float dt){deltaTime = dt;}
