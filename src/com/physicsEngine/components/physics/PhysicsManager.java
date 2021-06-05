@@ -9,7 +9,7 @@ public class PhysicsManager {
 	private static float timeSpeed = 1f;
 
 	public static void setDeletaTime(float dt){deltaTime = dt;}
-	public static float getDeletaTime(){return deltaTime;}
+	public static float getDeltaTime(){return deltaTime;}
 
     public static void setTimeSpeed(float tSpeed){timeSpeed = tSpeed;}
     public static float getTimeSpeed(){return timeSpeed;}
