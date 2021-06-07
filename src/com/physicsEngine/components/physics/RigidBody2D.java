@@ -15,9 +15,9 @@ public class RigidBody2D extends Component{
   public float angularVelocity;
   public float angularAcceleration;
     
-	public RigidBody2D(Transform transform,GameObject gameObject,Collider collider,float mass){
-		this.transform = transform;
+	public RigidBody2D(GameObject gameObject,Collider collider,float mass){
 		this.gameObject =  gameObject;
+    this.transform = gameObject.transform;
 		this.collider = collider;
 		this.mass = mass;
  
