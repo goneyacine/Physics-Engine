@@ -12,27 +12,48 @@ public class SpriteRenderer extends Component {
 
   public GameObject gameObject;
   public Transform transform;
-  public BufferedImage sprite;
+  private BufferedImage sprite;
   public Color color = Color.white;
   private Vector2 defaultSize;
+  public BufferedImage defaultSprite;
+  private Color oldColor;
 
   public SpriteRenderer(GameObject gameObject, BufferedImage sprite) {
+
     this.gameObject = gameObject;
     this.transform = gameObject.transform;
-    this.sprite = sprite;
+    this.defaultSprite = sprite;
     defaultSize = new Vector2(sprite.getWidth(), sprite.getHeight());
     Game.game.spriteRenderers.add(this);
     gameObject.components.add(this);
+    gameObject.hasSpriteRenderer = true;
+    gameObject.transform.spriteRenderer = this;
+    name = "Sprite Renderer";
     renderRotatedSprite();
+
+    oldColor = color;
   }
 
   /*this method takes the resource sprite & render it by apply rotation...*/
   public void renderRotatedSprite() {
     AffineTransform tx = new AffineTransform();
-    tx.rotate(0.5, defaultSize.x / 2, defaultSize.y / 2);
+    tx.rotate(Math.toRadians(gameObject.transform.zAngle), defaultSize.x / 2, defaultSize.y / 2);
     AffineTransformOp op = new AffineTransformOp(tx,
         AffineTransformOp.TYPE_BILINEAR);
-    sprite = op.filter(sprite, null);
+    sprite = op.filter(defaultSprite, null);
+  }
+  
+  public BufferedImage getSprite(){
+    return sprite;
+  }
+  public Vector2 getDefaultSize(){
+    return defaultSize;
   }
 
+  public void update(){
+    if(oldColor != color){
+      Game.game.shouldRenderNewFrame = true;
+      oldColor = color;
+    }
+  }
 }

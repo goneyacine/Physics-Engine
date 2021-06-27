@@ -21,7 +21,7 @@ public class Displayer extends JFrame {
   public void display(Cam cam) {
     if (cam != null)
       frame = cam.render();
-
+    setVisible(true);
     ImageCapabilities imgBackBufCap = new ImageCapabilities(true);
     ImageCapabilities imgFrontBufCap = new ImageCapabilities(true);
     BufferCapabilities bufCap =
@@ -34,9 +34,10 @@ public class Displayer extends JFrame {
     }
 
     BufferStrategy bs = getBufferStrategy();
-    Graphics g =  bs.getDrawGraphics();
+    Graphics2D g = (Graphics2D)bs.getDrawGraphics();
     if (frame != null)
       g.drawImage(frame, 0, 0, null);
+
     g.dispose();
     bs.show();
 

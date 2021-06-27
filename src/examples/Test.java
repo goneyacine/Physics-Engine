@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 public class Test {
 
 	public static void main(String[] args) {
-		Game.setUp();
+		Game.setUp(null);
 		GameObject obj = new GameObject(new Transform(new Vector2(0, 0), 180, new Vector2(1, 1)), "obj");
 		GameObject camObject =  new GameObject(null, "cam");
 		Cam cam = new Cam(camObject, new Vector2(10, 90), new Vector2(1920, 1080));

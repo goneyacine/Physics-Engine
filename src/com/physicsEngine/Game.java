@@ -1,11 +1,12 @@
 package com.physicsEngine;
 
-import com.physicsEngine.components.*;
-import com.physicsEngine.components.rendering.*;
-import com.physicsEngine.customExceptions.NoSceneAttachedToGameException;
-import com.physicsEngine.rendering.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
+
+import com.physicsEngine.components.rendering.Cam;
+import com.physicsEngine.components.rendering.SpriteRenderer;
+import com.physicsEngine.customExceptions.NoSceneAttachedToGameException;
+import com.physicsEngine.rendering.Displayer;
 
 public class Game implements Runnable {
 	//there should be only one game instance
@@ -23,6 +24,9 @@ public class Game implements Runnable {
 
 	private List<Scene> scenes = new ArrayList<Scene>();
 	private Scene runningScene;
+	/* this used to check if we should render new frame or not because nothing has been changed, this should
+	    help us improving the preformence */
+	public boolean shouldRenderNewFrame = true;
 
 	public Game(List<Scene> scenes)
 	{
@@ -45,6 +49,7 @@ public class Game implements Runnable {
 	private synchronized void start() {
 		thread = new Thread(this, "Display");
 		thread.start();
+		runningScene.start();
 	}
 
 	public synchronized void stop() {
@@ -55,10 +60,14 @@ public class Game implements Runnable {
 		}
 	}
 	public void run() {
+		runningScene.update();
+		if(shouldRenderNewFrame){
 		display();
-		try {
-			Thread.sleep((long)(1 / 60 * 1000));
-		} catch (Exception e) {System.out.println(e);}
+		shouldRenderNewFrame = false;
+		}
+		try{
+		 Thread.sleep(1000 / 144);
+		}catch(Exception e){e.printStackTrace();}
 		run();
 	}
 

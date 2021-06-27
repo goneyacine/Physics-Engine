@@ -48,7 +48,7 @@ public class RigidBody2D extends Component {
     angularVelocity += angularAcceleration * PhysicsManager.getDeltaTime();
 
   }
-  public void updateAngularVelocity() {
+  public void applyAngularVelocity() {
 
   }
 
