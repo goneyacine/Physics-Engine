@@ -13,7 +13,7 @@ public class Game implements Runnable {
 	public static Game game;
 	//the list of all gameobejcts that are in the scene (this should be included on the scene class but i'll work on that later)
 	public List<GameObject> gameObjects = new ArrayList<GameObject>();
-
+    public double fps;
 	public List<SpriteRenderer> spriteRenderers = new ArrayList<SpriteRenderer>();
 
 	public Cam camera;
@@ -27,9 +27,10 @@ public class Game implements Runnable {
 	/* this used to check if we should render new frame or not because nothing has been changed, this should
 	    help us improving the preformence */
 	public boolean shouldRenderNewFrame = true;
-
+    private double FPSOldTime;
 	public Game(List<Scene> scenes)
 	{
+	FPSOldTime = System.nanoTime();
      //checking if the scenes list isn't empty, if it is, then throw NoSceneAttachedToGameException
      if(scenes == null || scenes.size() == 0){
 		try {
@@ -61,10 +62,7 @@ public class Game implements Runnable {
 	}
 	public void run() {
 		runningScene.update();
-		if(shouldRenderNewFrame){
 		display();
-		shouldRenderNewFrame = false;
-		}
 		try{
 		 Thread.sleep(1000 / 144);
 		}catch(Exception e){e.printStackTrace();}
