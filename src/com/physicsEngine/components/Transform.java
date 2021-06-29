@@ -30,17 +30,17 @@ public class Transform extends Component {
 		oldScale = scale;
 	}
 	public void update(){
-		if((position.x != oldPosition.x || position.y != oldPosition.y) || zAngle != oldAngle || (scale.x != oldScale.x && scale.y != oldScale.y)){
+		
+	    spriteRenderer.renderScaledSprite();
+		if(position.x != oldPosition.x || position.y != oldPosition.y || zAngle != oldAngle || scale.x != oldScale.x || scale.y != oldScale.y){
 		if(gameObject.hasSpriteRenderer){
 			//if the the rotation of the sprite has been changed then we should rerender the sprite
 			if(zAngle != oldAngle && scale.x == oldScale.x && scale.y == oldScale.y)
 			spriteRenderer.renderRotatedSprite();
-			else if(scale.x != oldScale.x || scale.y != oldScale.y)
+            else if(scale.x != oldScale.x || scale.y != oldScale.y)
             spriteRenderer.renderScaledSprite();
-
 		    Game.game.shouldRenderNewFrame = true;
-	}
-
+	} 
 
 		oldPosition = position;
 		oldAngle = zAngle;

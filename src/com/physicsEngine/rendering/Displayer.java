@@ -3,6 +3,8 @@ package com.physicsEngine.rendering;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
+
+import com.physicsEngine.Game;
 import com.physicsEngine.components.rendering.*;
 
 public class Displayer extends JFrame {
@@ -19,27 +21,29 @@ public class Displayer extends JFrame {
   }
 
   public void display(Cam cam) {
+    BufferStrategy bs = getBufferStrategy();
+    if(bs == null){
+      createBufferStrategy(3);
+    return;
+    }
     if (cam != null)
       frame = cam.render();
+    else 
+    return;
+
     setVisible(true);
-    ImageCapabilities imgBackBufCap = new ImageCapabilities(true);
-    ImageCapabilities imgFrontBufCap = new ImageCapabilities(true);
-    BufferCapabilities bufCap =
-      new BufferCapabilities(imgFrontBufCap, imgBackBufCap, BufferCapabilities.FlipContents.COPIED);
-    try {
-
-      createBufferStrategy(2, bufCap);
-    } catch (AWTException ex) {
-      createBufferStrategy(2);
-    }
-
-    BufferStrategy bs = getBufferStrategy();
-    Graphics2D g = (Graphics2D)bs.getDrawGraphics();
+    Graphics g = bs.getDrawGraphics();
     if (frame != null)
       g.drawImage(frame, 0, 0, null);
 
-    g.dispose();
+    Font myFont = new Font("Courier", Font.PLAIN,14);
+    g.setFont(myFont);
+    g.setColor(Color.yellow);
+    g.drawString("ups : " + Game.game.getUpdates() ,5, 12);
+    g.drawString("fps : " + Game.game.getFrames(), 5,31);
+      g.dispose();  
     bs.show();
+
 
 
 

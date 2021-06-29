@@ -13,9 +13,15 @@ public class Game implements Runnable {
 	public static Game game;
 	//the list of all gameobejcts that are in the scene (this should be included on the scene class but i'll work on that later)
 	public List<GameObject> gameObjects = new ArrayList<GameObject>();
-    public double fps;
+    private int fps;
+	private int updates;
+	private long lastTime;
+	private long timer;
+	private final double ns = 1000000000 / 60;
+	private double delta = 0;
 	public List<SpriteRenderer> spriteRenderers = new ArrayList<SpriteRenderer>();
-
+    private int ups;
+	private int frames;
 	public Cam camera;
 
 	private Displayer displayer = new Displayer();
@@ -27,10 +33,8 @@ public class Game implements Runnable {
 	/* this used to check if we should render new frame or not because nothing has been changed, this should
 	    help us improving the preformence */
 	public boolean shouldRenderNewFrame = true;
-    private double FPSOldTime;
 	public Game(List<Scene> scenes)
 	{
-	FPSOldTime = System.nanoTime();
      //checking if the scenes list isn't empty, if it is, then throw NoSceneAttachedToGameException
      if(scenes == null || scenes.size() == 0){
 		try {
@@ -61,12 +65,25 @@ public class Game implements Runnable {
 		}
 	}
 	public void run() {
+		while(true){
+		long now = System.nanoTime();
+		delta = (now - lastTime)  / ns;
+		lastTime = System.nanoTime();
+		if(delta >= 1) {
 		runningScene.update();
+		updates++;
+		delta--;
+		}
 		display();
-		try{
-		 Thread.sleep(1000 / 144);
-		}catch(Exception e){e.printStackTrace();}
-		run();
+		fps++;
+        if(System.currentTimeMillis() - timer > 1000){
+        timer += 1000;
+		ups = updates;
+		frames = fps;
+		updates = 0;
+		fps = 0;
+		}
+	}
 	}
 
 	//I have to change this later
@@ -75,6 +92,8 @@ public class Game implements Runnable {
 	}
 	public void runGame() {
 		start();
+		lastTime = System.nanoTime();
+		timer = System.currentTimeMillis();
 		run();
 	}
 
@@ -109,5 +128,11 @@ public class Game implements Runnable {
 			else 
 			continue;
 		}
+	}
+	public int getFrames(){
+    return frames;
+	}
+	public int getUpdates(){
+    return ups;
 	}
 }

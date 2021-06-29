@@ -60,38 +60,25 @@ public class SpriteRenderer extends Component {
   public BufferedImage getOriginalSprite() {
     return originalSprite;
   }
-
-  public void update() {
-    if (oldColor != color) {
-      Game.game.shouldRenderNewFrame = true;
-      oldColor = color;
-    }
-  }
-
   //this method is used when changing the scale of the parent object
   public void renderScaledSprite() {
-    if (gameObject.transform.scale.x == 1 && gameObject.transform.scale.y == 1) {
-      this.notRotatedButScaledSprite = originalSprite;
-       renderRotatedSprite();
-      return;
-    }
     int newSpriteXSize = (int)(originalSize.x * gameObject.transform.scale.x);
     int newSpriteYSize = (int)(originalSize.y * gameObject.transform.scale.y);
     BufferedImage renderedImage = new BufferedImage(newSpriteXSize,newSpriteYSize,BufferedImage.TYPE_INT_RGB);
     int x_ratio = (int)((originalSprite.getWidth() << 16) / newSpriteXSize) + 1;
     int y_ratio = (int)((originalSprite.getHeight() << 16) / newSpriteYSize) + 1;
-    double px, py; 
+    int x2, y2; 
 
-    for (int i = 0;i < newSpriteXSize;i++) {
-        for (int j = 0;j < newSpriteYSize;j++) {
-            px = Math.floor(j*x_ratio) ;
-            py = Math.floor(i*y_ratio) ;
-            renderedImage.setRGB(i,j,originalSprite.getRGB((int)px,(int)py));
+    for (int i = 0;i < newSpriteYSize;i++) {
+        for (int j = 0;j < newSpriteXSize;j++) {
+            x2 = ((j*x_ratio)>>16) ;
+            y2 = ((i*y_ratio)>>16) ;
+            renderedImage.setRGB(j,i,originalSprite.getRGB(x2,y2));
         }
     }
     this.notRotatedButScaledSprite = renderedImage;
-    System.out.println("Scalling is working I think");
     renderRotatedSprite();
+
   }
 
 
