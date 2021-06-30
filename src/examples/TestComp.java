@@ -8,17 +8,11 @@ public class TestComp extends Component{
     
 public TestComp(GameObject gameObject){
  this.gameObject = gameObject;
+ gameObject.transform.position.x = 5;
+ gameObject.transform.position.y = 8;
 }
 public void update(){
-    if(gameObject.transform.scale.x > .1f)
-    gameObject.transform.scale.x -= .005f ;
-    else 
-    gameObject.transform.scale.x = 1f;
 
-    if(gameObject.transform.scale.y > .1f)
-    gameObject.transform.scale.y -= .005f ;
-    else 
-    gameObject.transform.scale.y = 1f;
     
 }
     

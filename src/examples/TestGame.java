@@ -23,7 +23,7 @@ public class TestGame {
         scenes.add(scene);
         Game.setUp(scenes);
         GameObject camObject =  new GameObject(null, "cam");
-		Cam cam = new Cam(camObject,10, new Vector2(1920, 1080));
+		Cam cam = new Cam(camObject,100, new Vector2(1920, 1080));
         BufferedImage img = null;
 		try {
 			img = ImageIO.read(new File("C:\\Users\\dtech\\Pictures\\wow.png"));

@@ -39,9 +39,8 @@ public class Transform extends Component {
 			spriteRenderer.renderRotatedSprite();
             else if(scale.x != oldScale.x || scale.y != oldScale.y)
             spriteRenderer.renderScaledSprite();
-		    Game.game.shouldRenderNewFrame = true;
 	} 
-
+        Game.game.camera.checkIfShouldRender(spriteRenderer);
 		oldPosition = position;
 		oldAngle = zAngle;
 		oldScale = scale;

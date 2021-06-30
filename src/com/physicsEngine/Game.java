@@ -65,7 +65,6 @@ public class Game implements Runnable {
 		}
 	}
 	public void run() {
-		while(true){
 		long now = System.nanoTime();
 		delta = (now - lastTime)  / ns;
 		lastTime = System.nanoTime();
@@ -83,7 +82,7 @@ public class Game implements Runnable {
 		updates = 0;
 		fps = 0;
 		}
-	}
+	    run();
 	}
 
 	//I have to change this later
