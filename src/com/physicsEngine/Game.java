@@ -6,7 +6,7 @@ import java.util.List;
 import com.physicsEngine.components.rendering.Cam;
 import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.customExceptions.NoSceneAttachedToGameException;
-import com.physicsEngine.rendering.Displayer;
+import com.physicsEngine.rendering.*;
 
 public class Game implements Runnable {
 	//there should be only one game instance
@@ -23,10 +23,8 @@ public class Game implements Runnable {
     private int ups;
 	private int frames;
 	public Cam camera;
+	private Renderer renderer = new Renderer();
 
-	private Displayer displayer = new Displayer();
-
-	private Thread thread;
 
 	private List<Scene> scenes = new ArrayList<Scene>();
 	private Scene runningScene;
@@ -40,7 +38,6 @@ public class Game implements Runnable {
 		try {
 			throw new NoSceneAttachedToGameException();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -51,19 +48,7 @@ public class Game implements Runnable {
 	public static void setUp(List<Scene> scenes) {
 		game = new Game(scenes);
 	}
-	private synchronized void start() {
-		thread = new Thread(this, "Display");
-		thread.start();
-		runningScene.start();
-	}
 
-	public synchronized void stop() {
-		try {
-			thread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 	public void run() {
 		long now = System.nanoTime();
 		delta = (now - lastTime)  / ns;
@@ -87,10 +72,9 @@ public class Game implements Runnable {
 
 	//I have to change this later
 	public void display() {
-		displayer.display(camera);
+		renderer.render();
 	}
 	public void runGame() {
-		start();
 		lastTime = System.nanoTime();
 		timer = System.currentTimeMillis();
 		run();
