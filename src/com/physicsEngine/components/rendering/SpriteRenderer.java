@@ -4,6 +4,7 @@ import com.physicsEngine.components.*;
 import com.physicsEngine.*;
 import com.physicsEngine.vectors.*;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.awt.Color;
 
 public class SpriteRenderer extends Component {
@@ -62,7 +63,7 @@ public class SpriteRenderer extends Component {
   }
   /** computes the dimension of the space token by the rendered sprite */
   public void comupteWorldSpaceSize() {
-    worldSpaceSize = new Vector2(texture.getWidth() / pixelsPerUnit, texture.getHeight());
+    worldSpaceSize = new Vector2(texture.getWidth() / pixelsPerUnit, texture.getHeight()  / pixelsPerUnit);
   }
 
   public void setTexture(BufferedImage texture){
@@ -93,9 +94,8 @@ public class SpriteRenderer extends Component {
     vertices[5] = -getWorldSpaceSize().y / 2 + transform.position.y;
 
     
-    vertices[6] = getWorldSpaceSize().x / 2 + transform.position.x;
+    vertices[6] = -getWorldSpaceSize().x / 2 + transform.position.x;
     vertices[7] = getWorldSpaceSize().y / 2 + transform.position.y;
-
     return vertices;
   }
   public int[] getIndices(){

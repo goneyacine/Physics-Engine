@@ -1,28 +1,37 @@
 package com.physicsEngine.rendering;
 
-import java.lang.Math;
 import java.nio.*;
 
+
+import com.physicsEngine.Game;
 import com.physicsEngine.components.rendering.SpriteRenderer;
 
 import org.joml.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
+
+import shaders.ShaderCompiler;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 public class Renderer {
 
    // The window handle
-	private long window;
+  private long window;
   private int bufferID;
   private int indexBufferID;
+  private int veiwMatrixUniformPath;
 
-
+  private int defaultShaderID;
  public Renderer(){
    initWindow();
  }
@@ -42,7 +51,7 @@ public class Renderer {
 		glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+		window = glfwCreateWindow(3, 3, "Game Engine", NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -78,52 +87,93 @@ public class Renderer {
 
 		// Make the window visible
 		glfwShowWindow(window);
-	}
-  public void render(List<SpriteRenderer> spriteRenderers){
-    onCloseWindow();
-    // This line is critical for LWJGL's interoperation with GLFW's
+        
+		String[] defaultShaderPaths = {
+			"src\\shaders\\vertexShader.glsl",
+			"src\\shaders\\fragmentShader.glsl"
+		};
+		int[] defaultShaderTypes = {
+			GL_VERTEX_SHADER,
+            GL_FRAGMENT_SHADER
+		};
+		    // This line is critical for LWJGL's interoperation with GLFW's
 		// OpenGL context, or any context that is managed externally.
 		// LWJGL detects the context that is current in the current thread,
 		// creates the GLCapabilities instance and makes the OpenGL
 		// bindings available for use.
 		GL.createCapabilities();
-	
+		bufferID =  glGenBuffers();
+		glBindBuffer(GL_ARRAY_BUFFER,bufferID);
+        glBufferData(GL_ARRAY_BUFFER,NULL,GL_DYNAMIC_DRAW);
+
+         glEnableVertexAttribArray(0);
+         glVertexAttribPointer(0,2,GL11.GL_FLOAT,false,Float.BYTES * 2,0);
+
+	    indexBufferID =  glGenBuffers();
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBufferID);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,NULL,GL_DYNAMIC_DRAW);
+		defaultShaderID = ShaderCompiler.compileShader(defaultShaderPaths, defaultShaderTypes);
+		glUseProgram(defaultShaderID);
+		veiwMatrixUniformPath =  glGetUniformLocation(defaultShaderID,"veiwMatrix");
+	}
+  public void render(List<SpriteRenderer> spriteRenderers){
+    onCloseWindow();
+	if(glfwWindowShouldClose(window))
+	return;
+	//checks there is camera object, if there no camera then we don't need to render 
+	if(Game.game.camera == null)
+	return;
+
     float[] vertices = new float[spriteRenderers.size() * 4 * 2];
 	int[] indices = new int[spriteRenderers.size() * 6];
        //putting all the vertices data into one array
+	   
 	for(int i = 0;i < spriteRenderers.size();i++){
 		float[] spriteRendererVertices = spriteRenderers.get(i).getVertices();
 		int[] spriteRendererIndices = spriteRenderers.get(i).getIndices();
 
-		for(int j = 0;j < 6;j++){
-			//putting the vertices data from the spriteRenderer into the fianl vertices data array
-			if(j < 4){
-			vertices[i + j] = spriteRendererVertices[j];
+		
+        for(int j = 0;j < 8;j++){
+			if(j < 6){
+				indices[i * 6 + j] = spriteRendererIndices[j] + i * 6;
 			}
-			//putting the indices data from the spriteRenderer into the final indices data array
-			indices[i + j] = spriteRendererIndices[j];
+			vertices[i * 8 + j] = spriteRendererVertices[j];
 		}
 	}
 
-    bufferID =  glGenBuffers();
+    //computing the camera view matrix
+	try (MemoryStack stack = MemoryStack.stackPush()) {
+
+	//computing the matrix & storing it in a float buffer
+	float camXsize =  Game.game.camera.acpectRatio[0] * Game.game.camera.getSize();
+	float camYsize =  Game.game.camera.acpectRatio[1] * Game.game.camera.getSize(); 
+	FloatBuffer fb = new Matrix4f().
+	ortho2D(-camXsize /2,camXsize / 2,-camYsize /2,camYsize / 2).get(stack.mallocFloat(16));
+    
+
+	
+
+	//setting the view matrix uniform in the default shader
+    glUniformMatrix4fv(veiwMatrixUniformPath,false,fb);
+
+	}
     glBindBuffer(GL_ARRAY_BUFFER,bufferID);
     glBufferData(GL_ARRAY_BUFFER,vertices,GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0,2,GL11.GL_FLOAT,false,Float.BYTES * 2,0);
 
-	  indexBufferID =  glGenBuffers();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices,GL_DYNAMIC_DRAW);
    
 
-			glClear(GL_COLOR_BUFFER_BIT); // clear the framebuffer
+	  glClear(GL_COLOR_BUFFER_BIT); // clear the framebuffer
       glDrawElements(GL11.GL_TRIANGLES,indices.length,GL11.GL_UNSIGNED_INT,0);
-			glfwSwapBuffers(window); // swap the color buffers
+	  glfwSwapBuffers(window); // swap the color buffers
 			
-			// Poll for window events. The key callback above will only be
-			// invoked during this call.
-			glfwPollEvents();
+	  // Poll for window events. The key callback above will only be
+	 // invoked during this call.
+	glfwPollEvents();
 		}
 		
   public void onCloseWindow(){

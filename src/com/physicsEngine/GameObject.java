@@ -65,4 +65,11 @@ public class GameObject {
      components.remove(comp);
 
   }
+  /**
+   * 
+   * @return all the components attached to the gameobject as List
+   */
+  public List<Component> getAllComponents(){
+      return components;
+  }
 }

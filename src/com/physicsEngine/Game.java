@@ -2,7 +2,6 @@ package com.physicsEngine;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.physicsEngine.components.rendering.Cam;
 import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.customExceptions.NoSceneAttachedToGameException;
@@ -72,7 +71,7 @@ public class Game implements Runnable {
 
 	//I have to change this later
 	public void display() {
-		renderer.render();
+		renderer.render(spriteRenderers);
 	}
 	public void runGame() {
 		lastTime = System.nanoTime();

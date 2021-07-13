@@ -17,7 +17,7 @@ public class Cam extends Component {
    *
    * @param gameObject parent gameObject
    * @param size the view size of the camera
-   * @param resolution the screen resolution
+   * @param acpectRatio the camera view acpectRatio
    */
   public Cam(GameObject gameObject, float size, float[] acpectRatio) {
     this.gameObject =  gameObject;

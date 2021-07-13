@@ -36,7 +36,7 @@ public class Scene {
      */
     public void start(){
       for(GameObject gameObject : gameObjects){
-          for(Component comp : gameObject.components){
+          for(Component comp : gameObject.getAllComponents()){
               comp.start();
           }
       }
@@ -47,7 +47,7 @@ public class Scene {
      */
     public void update(){
         for(GameObject gameObject : gameObjects){
-            for(Component comp : gameObject.components){
+            for(Component comp : gameObject.getAllComponents()){
                 comp.update();
             }
         }
