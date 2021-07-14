@@ -6,5 +6,5 @@ uniform vec4 u_Color;
 
 void main()
 {
- color = vec4(.5,.5,.5,1);
+ color = vec4(.8,0,.5,1);
 }

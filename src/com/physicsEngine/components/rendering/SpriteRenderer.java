@@ -4,7 +4,6 @@ import com.physicsEngine.components.*;
 import com.physicsEngine.*;
 import com.physicsEngine.vectors.*;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.awt.Color;
 
 public class SpriteRenderer extends Component {
@@ -26,8 +25,9 @@ public class SpriteRenderer extends Component {
     name = "Sprite Renderer";
     this.gameObject = gameObject;
     this.transform = gameObject.transform;
+    if(sprite != null)
     Game.game.spriteRenderers.add(this);
-    gameObject.addComponent(this);;
+    gameObject.addComponent(this);
     gameObject.hasSpriteRenderer = true;
     
     this.texture = sprite;
@@ -63,11 +63,17 @@ public class SpriteRenderer extends Component {
   }
   /** computes the dimension of the space token by the rendered sprite */
   public void comupteWorldSpaceSize() {
+    if(texture != null)
     worldSpaceSize = new Vector2(texture.getWidth() / pixelsPerUnit, texture.getHeight()  / pixelsPerUnit);
+    else 
+    worldSpaceSize = new Vector2(0,0);
   }
 
   public void setTexture(BufferedImage texture){
     this.texture = texture;
+    if(texture == null)
+    Game.game.spriteRenderers.remove(this);
+    
     comupteWorldSpaceSize();
   }
   public BufferedImage getTexture(){
@@ -81,21 +87,20 @@ public class SpriteRenderer extends Component {
    */
   public float[] getVertices(){
     float[] vertices = new float[8];
-
-    vertices[0] = getWorldSpaceSize().x / 2 + transform.position.x;
-    vertices[1] = getWorldSpaceSize().y / 2 + transform.position.y;
+    vertices[0] = (float) (getWorldSpaceSize().x * Math.cos(Math.toRadians(transform.zAngle + 45)) + transform.position.x);
+    vertices[1] = (float) (getWorldSpaceSize().y * Math.sin(Math.toRadians(transform.zAngle + 45)) + transform.position.y);
     
    
-    vertices[2] = getWorldSpaceSize().x / 2 + transform.position.x;
-    vertices[3] = -getWorldSpaceSize().y / 2 + transform.position.y;
+    vertices[2] = (float) (getWorldSpaceSize().x *  Math.cos(Math.toRadians(transform.zAngle + 135)) + transform.position.x);
+    vertices[3] = (float) (getWorldSpaceSize().y * Math.sin(Math.toRadians(transform.zAngle + 135)) + transform.position.y);
 
     
-    vertices[4] = -getWorldSpaceSize().x / 2 + transform.position.x;
-    vertices[5] = -getWorldSpaceSize().y / 2 + transform.position.y;
+    vertices[4] = (float) (getWorldSpaceSize().x * Math.cos(Math.toRadians(transform.zAngle + 225)) + transform.position.x);
+    vertices[5] = (float) (getWorldSpaceSize().y *  Math.sin(Math.toRadians(transform.zAngle + 225)) + transform.position.y);
 
     
-    vertices[6] = -getWorldSpaceSize().x / 2 + transform.position.x;
-    vertices[7] = getWorldSpaceSize().y / 2 + transform.position.y;
+    vertices[6] = (float) (getWorldSpaceSize().x * Math.cos(Math.toRadians(transform.zAngle + 315)) + transform.position.x);
+    vertices[7] = (float) (getWorldSpaceSize().y * Math.sin(Math.toRadians(transform.zAngle + 315)) + transform.position.y);
     return vertices;
   }
   public int[] getIndices(){

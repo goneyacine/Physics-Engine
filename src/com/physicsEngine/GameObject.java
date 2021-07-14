@@ -2,7 +2,6 @@
 package com.physicsEngine;
 
 import com.physicsEngine.components.*;
-import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.vectors.*;
 import java.util.*;
 
@@ -47,9 +46,6 @@ public class GameObject {
           System.err.println("Can't Added A Component To " + name + " GameObject Because It Already Contains A Component With The Same Type");
           return;
           }
-
-      if(component.name.equals("Sprite Renderer"))
-      Game.game.spriteRenderers.add((SpriteRenderer)component);
 
       components.add(component);
   } 

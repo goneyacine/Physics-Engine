@@ -1,16 +1,16 @@
 package examples;
 
-import com.physicsEngine.Game;
+import com.physicsEngine.GameObject;
 import com.physicsEngine.components.*;
 
 public class TestComp extends Component{
-    public TestComp(){
+    private float angle = 0;
+    public TestComp(GameObject gameObject){
+        this.gameObject = gameObject;
         name = "test comp";
     }
     public void update(){
-    float sizeChanging = .001f;
-
-    Game.game.camera.setSize(Game.game.camera.getSize() + sizeChanging);
+   // gameObject.transform.zAngle += 2f;
     
     }
 }

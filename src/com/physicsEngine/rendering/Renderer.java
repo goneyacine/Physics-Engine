@@ -18,9 +18,6 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Renderer {
@@ -30,6 +27,10 @@ public class Renderer {
   private int bufferID;
   private int indexBufferID;
   private int veiwMatrixUniformPath;
+  private float[] vertices;
+  private int[] indices;
+  private float camXsize;
+  private float camYsize;
 
   private int defaultShaderID;
  public Renderer(){
@@ -116,16 +117,24 @@ public class Renderer {
 		glUseProgram(defaultShaderID);
 		veiwMatrixUniformPath =  glGetUniformLocation(defaultShaderID,"veiwMatrix");
 	}
+
+  /**
+   * 
+
+   * @param spriteRenderers all the sprite renderers that are enabled in the scene
+   */
   public void render(List<SpriteRenderer> spriteRenderers){
-    onCloseWindow();
-	if(glfwWindowShouldClose(window))
-	return;
+	if(glfwWindowShouldClose(window)){
+		onCloseWindow();
+		System.exit(0);
+	;
+	}
 	//checks there is camera object, if there no camera then we don't need to render 
 	if(Game.game.camera == null)
 	return;
 
-    float[] vertices = new float[spriteRenderers.size() * 4 * 2];
-	int[] indices = new int[spriteRenderers.size() * 6];
+     vertices = new float[spriteRenderers.size() * 4 * 2];
+	 indices = new int[spriteRenderers.size() * 6];
        //putting all the vertices data into one array
 	   
 	for(int i = 0;i < spriteRenderers.size();i++){
@@ -140,13 +149,12 @@ public class Renderer {
 			vertices[i * 8 + j] = spriteRendererVertices[j];
 		}
 	}
-
+     camXsize =  Game.game.camera.acpectRatio[0] * Game.game.camera.getSize();
+	 camYsize =  Game.game.camera.acpectRatio[1] * Game.game.camera.getSize();
     //computing the camera view matrix
 	try (MemoryStack stack = MemoryStack.stackPush()) {
 
-	//computing the matrix & storing it in a float buffer
-	float camXsize =  Game.game.camera.acpectRatio[0] * Game.game.camera.getSize();
-	float camYsize =  Game.game.camera.acpectRatio[1] * Game.game.camera.getSize(); 
+	//computing the matrix & storing it in a float buffer 
 	FloatBuffer fb = new Matrix4f().
 	ortho2D(-camXsize /2,camXsize / 2,-camYsize /2,camYsize / 2).get(stack.mallocFloat(16));
     
