@@ -4,7 +4,6 @@ import com.physicsEngine.components.*;
 import com.physicsEngine.*;
 import com.physicsEngine.vectors.*;
 import java.awt.image.BufferedImage;
-import java.awt.Color;
 
 public class SpriteRenderer extends Component {
   
@@ -15,7 +14,7 @@ public class SpriteRenderer extends Component {
   /** the final rendered sprite(image) after apllying : scale,rotation & color */
   private BufferedImage texture;
   /** the color applyed to the rendered image */
-  private Color color = Color.white;
+  public float[] color = {0.8f,0,0,1};
   /** number of pixels in one world unit */
   private int pixelsPerUnit = 100;
   /** the dimensions of that sprite renderer in world space (or the dimensions of the space token by that sprite in world space) */
@@ -34,20 +33,6 @@ public class SpriteRenderer extends Component {
     comupteWorldSpaceSize();
   }
 
-
-  /**
-   * sets the color of the sprite renderer
-   * @param color
-   */
-  public void setColor(Color color) {
-    this.color = color;
-  }
-  /**
-   * @return the color of the sprite renderer
-   */
-  public Color getColor() {
-    return color;
-  }
   public int getPixelsPerUnit() {
     return pixelsPerUnit;
   }
@@ -83,24 +68,58 @@ public class SpriteRenderer extends Component {
 
   /**
    * 
-   * @return the an array of world space positions of each vertex
+   * @return the an array of world space positions of each vertex (these positions are effected by the object rotation)
    */
   public float[] getVertices(){
-    float[] vertices = new float[8];
-    vertices[0] = (float) (getWorldSpaceSize().x * Math.cos(Math.toRadians(transform.zAngle + 45)) + transform.position.x);
-    vertices[1] = (float) (getWorldSpaceSize().y * Math.sin(Math.toRadians(transform.zAngle + 45)) + transform.position.y);
+    float[] vertices = new float[24];
+
+    float[] finalWorldSize = {(float)Math.sqrt(getWorldSpaceSize().x * getWorldSpaceSize().x + getWorldSpaceSize().x * getWorldSpaceSize().x ) * transform.scale.x 
+    ,(float)Math.sqrt(getWorldSpaceSize().y * getWorldSpaceSize().y + getWorldSpaceSize().y * getWorldSpaceSize().y ) * transform.scale.y};
     
+
+
    
-    vertices[2] = (float) (getWorldSpaceSize().x *  Math.cos(Math.toRadians(transform.zAngle + 135)) + transform.position.x);
-    vertices[3] = (float) (getWorldSpaceSize().y * Math.sin(Math.toRadians(transform.zAngle + 135)) + transform.position.y);
 
-    
-    vertices[4] = (float) (getWorldSpaceSize().x * Math.cos(Math.toRadians(transform.zAngle + 225)) + transform.position.x);
-    vertices[5] = (float) (getWorldSpaceSize().y *  Math.sin(Math.toRadians(transform.zAngle + 225)) + transform.position.y);
 
+    //this is the angle made by the line between the camera center & this object
+     float objectAngleAroundCam  = (float)Math.atan2(transform.position.y / Vector2.distance(transform.position, Game.game.camera.transform.position), 
+     transform.position.x / Vector2.distance(transform.position, Game.game.camera.transform.position));
+    // here we rotate the position of this object in the oposite of the camera rotation
+   float[] finalPos = {(float)Math.cos(Math.toRadians(Math.toDegrees(objectAngleAroundCam) - Game.game.camera.gameObject.transform.zAngle)) * Vector2.distance(transform.position, Game.game.camera.transform.position), 
+    (float)Math.sin(Math.toRadians(Math.toDegrees(objectAngleAroundCam) - Game.game.camera.gameObject.transform.zAngle)) * Vector2.distance(transform.position, Game.game.camera.transform.position)};
+
+    //setting first vertex data
+    vertices[0] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 45 - Game.game.camera.transform.zAngle)) + finalPos[0]);
+    vertices[1] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 45 - Game.game.camera.transform.zAngle)) + finalPos[1]);
+    vertices[2] = color[0];
+    vertices[3] = color[1];
+    vertices[4] = color[2];
+    vertices[5] = color[3];
+
+    //setting the second vertex data
+    vertices[6] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 135- Game.game.camera.transform.zAngle)) + finalPos[0]);
+    vertices[7] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 135- Game.game.camera.transform.zAngle)) + finalPos[1]);
+    vertices[8] = color[0];
+    vertices[9] = color[1];
+    vertices[10] = color[2];
+    vertices[11] = color[3];
     
-    vertices[6] = (float) (getWorldSpaceSize().x * Math.cos(Math.toRadians(transform.zAngle + 315)) + transform.position.x);
-    vertices[7] = (float) (getWorldSpaceSize().y * Math.sin(Math.toRadians(transform.zAngle + 315)) + transform.position.y);
+    //setting the third vertex data
+    vertices[12] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 225 - Game.game.camera.transform.zAngle)) + finalPos[0]);
+    vertices[13] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 225 - Game.game.camera.transform.zAngle )) + finalPos[1]);
+    vertices[14] = color[0];
+    vertices[15] = color[1];
+    vertices[16] = color[2];
+    vertices[17] = color[3];
+    
+    //setting the fourth vetex data
+    vertices[18] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 315 - Game.game.camera.transform.zAngle)) + finalPos[0]);
+    vertices[19] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 315 - Game.game.camera.transform.zAngle)) + finalPos[1]);
+    vertices[20] = color[0];
+    vertices[21] = color[1];
+    vertices[22] = color[2];
+    vertices[23] = color[3];
+
     return vertices;
   }
   public int[] getIndices(){

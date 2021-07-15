@@ -1,16 +1,22 @@
 package examples;
 
+import com.physicsEngine.Game;
 import com.physicsEngine.GameObject;
 import com.physicsEngine.components.*;
+import com.physicsEngine.components.rendering.SpriteRenderer;
+
 
 public class TestComp extends Component{
-    private float angle = 0;
     public TestComp(GameObject gameObject){
         this.gameObject = gameObject;
         name = "test comp";
-    }
-    public void update(){
-   // gameObject.transform.zAngle += 2f;
     
+        
+        SpriteRenderer sp = (SpriteRenderer)gameObject.getComponent("Sprite Renderer");
+       float[] color = {(float)Math.random(),(float)Math.random(),(float)Math.random(),1};
+       sp.color = color;
     }
+    public void update() {
+    }
+
 }

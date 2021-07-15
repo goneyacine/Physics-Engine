@@ -12,6 +12,7 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import shaders.ShaderCompiler;
+import java.lang.Math;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -26,12 +27,13 @@ public class Renderer {
   private long window;
   private int bufferID;
   private int indexBufferID;
-  private int veiwMatrixUniformPath;
+  private int projectionMatrixUniformPath;
   private float[] vertices;
   private int[] indices;
   private float camXsize;
   private float camYsize;
-
+  private float[] spriteRendererVertices;
+  private int[] spriteRendererIndices;
   private int defaultShaderID;
  public Renderer(){
    initWindow();
@@ -106,16 +108,23 @@ public class Renderer {
 		bufferID =  glGenBuffers();
 		glBindBuffer(GL_ARRAY_BUFFER,bufferID);
         glBufferData(GL_ARRAY_BUFFER,NULL,GL_DYNAMIC_DRAW);
-
-         glEnableVertexAttribArray(0);
-         glVertexAttribPointer(0,2,GL11.GL_FLOAT,false,Float.BYTES * 2,0);
+  
 
 	    indexBufferID =  glGenBuffers();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBufferID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,NULL,GL_DYNAMIC_DRAW);
 		defaultShaderID = ShaderCompiler.compileShader(defaultShaderPaths, defaultShaderTypes);
 		glUseProgram(defaultShaderID);
-		veiwMatrixUniformPath =  glGetUniformLocation(defaultShaderID,"veiwMatrix");
+		projectionMatrixUniformPath =  glGetUniformLocation(defaultShaderID,"projectionMatrix");
+		    
+				
+        //position attrib
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0,2,GL11.GL_FLOAT,false,Float.BYTES * 6,0);
+		
+		//color attrib
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1,4,GL11.GL_FLOAT,false,Float.BYTES * 6,8);
 	}
 
   /**
@@ -133,44 +142,40 @@ public class Renderer {
 	if(Game.game.camera == null)
 	return;
 
-     vertices = new float[spriteRenderers.size() * 4 * 2];
+     vertices = new float[spriteRenderers.size() * 6 * 4];
 	 indices = new int[spriteRenderers.size() * 6];
        //putting all the vertices data into one array
 	   
 	for(int i = 0;i < spriteRenderers.size();i++){
-		float[] spriteRendererVertices = spriteRenderers.get(i).getVertices();
-		int[] spriteRendererIndices = spriteRenderers.get(i).getIndices();
-
+		 spriteRendererVertices = spriteRenderers.get(i).getVertices();
+	     spriteRendererIndices = spriteRenderers.get(i).getIndices();
+         
 		
-        for(int j = 0;j < 8;j++){
+        for(int j = 0;j < 24;j++){
 			if(j < 6){
-				indices[i * 6 + j] = spriteRendererIndices[j] + i * 6;
+				indices[i * 6 + j] = spriteRendererIndices[j] + i * 4;
 			}
-			vertices[i * 8 + j] = spriteRendererVertices[j];
+			vertices[i * 24 + j] = spriteRendererVertices[j];
 		}
 	}
      camXsize =  Game.game.camera.acpectRatio[0] * Game.game.camera.getSize();
 	 camYsize =  Game.game.camera.acpectRatio[1] * Game.game.camera.getSize();
+     
     //computing the camera view matrix
 	try (MemoryStack stack = MemoryStack.stackPush()) {
 
 	//computing the matrix & storing it in a float buffer 
 	FloatBuffer fb = new Matrix4f().
-	ortho2D(-camXsize /2,camXsize / 2,-camYsize /2,camYsize / 2).get(stack.mallocFloat(16));
+	ortho2D(-camXsize /2 + Game.game.camera.transform.position.x,camXsize / 2 + Game.game.camera.transform.position.x,-camYsize /2 +  Game.game.camera.transform.position.y,camYsize / 2 +  Game.game.camera.transform.position.y).get(stack.mallocFloat(16));
     
 
-	
-
 	//setting the view matrix uniform in the default shader
-    glUniformMatrix4fv(veiwMatrixUniformPath,false,fb);
+    glUniformMatrix4fv(projectionMatrixUniformPath,false,fb);
 
 	}
     glBindBuffer(GL_ARRAY_BUFFER,bufferID);
     glBufferData(GL_ARRAY_BUFFER,vertices,GL_DYNAMIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0,2,GL11.GL_FLOAT,false,Float.BYTES * 2,0);
-
+    
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices,GL_DYNAMIC_DRAW);
    
