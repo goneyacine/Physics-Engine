@@ -17,6 +17,7 @@ public class TestComp extends Component{
        sp.color = color;
     }
     public void update() {
+
     }
 
 }

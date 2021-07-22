@@ -43,6 +43,7 @@ public class Game implements Runnable {
 
 	 this.scenes = scenes;
 	 runningScene = scenes.get(0);
+	 TexturesManager texturesManager = new TexturesManager();
 	}
 	public static void setUp(List<Scene> scenes) {
 		game = new Game(scenes);

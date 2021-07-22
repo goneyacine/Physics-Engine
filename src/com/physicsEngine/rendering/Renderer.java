@@ -12,7 +12,6 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import shaders.ShaderCompiler;
-import java.lang.Math;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -35,6 +34,7 @@ public class Renderer {
   private float[] spriteRendererVertices;
   private int[] spriteRendererIndices;
   private int defaultShaderID;
+
  public Renderer(){
    initWindow();
  }
@@ -99,7 +99,7 @@ public class Renderer {
 			GL_VERTEX_SHADER,
             GL_FRAGMENT_SHADER
 		};
-		    // This line is critical for LWJGL's interoperation with GLFW's
+		// This line is critical for LWJGL's interoperation with GLFW's
 		// OpenGL context, or any context that is managed externally.
 		// LWJGL detects the context that is current in the current thread,
 		// creates the GLCapabilities instance and makes the OpenGL
@@ -116,15 +116,20 @@ public class Renderer {
 		defaultShaderID = ShaderCompiler.compileShader(defaultShaderPaths, defaultShaderTypes);
 		glUseProgram(defaultShaderID);
 		projectionMatrixUniformPath =  glGetUniformLocation(defaultShaderID,"projectionMatrix");
-		    
+		int textureUniformPath = glGetUniformLocation(defaultShaderID,"u_texture");
+		glUniform1i(textureUniformPath,0);
+		glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 				
         //position attrib
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0,2,GL11.GL_FLOAT,false,Float.BYTES * 6,0);
-		
+		glVertexAttribPointer(0,2,GL11.GL_FLOAT,false,Float.BYTES * 8,0);
 		//color attrib
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1,4,GL11.GL_FLOAT,false,Float.BYTES * 6,8);
+		glVertexAttribPointer(1,4,GL11.GL_FLOAT,false,Float.BYTES * 8,8);
+		//texture coordinate attrib
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2,2,GL11.GL_FLOAT,false,Float.BYTES * 8,24);
 	}
 
   /**
@@ -142,52 +147,73 @@ public class Renderer {
 	if(Game.game.camera == null)
 	return;
 
-     vertices = new float[spriteRenderers.size() * 6 * 4];
+    int unrenderedSpriteRenderers = spriteRenderers.size();
+    
+	glClear(GL_COLOR_BUFFER_BIT); // clear the framebuffer
+        //computing the camera view matrix
+	try (MemoryStack stack = MemoryStack.stackPush()) {
+
+		//computing the matrix & storing it in a float buffer 
+		FloatBuffer fb = new Matrix4f().
+		ortho2D(-camXsize /2 + Game.game.camera.transform.position.x,camXsize / 2 + Game.game.camera.transform.position.x,-camYsize /2 +  Game.game.camera.transform.position.y,camYsize / 2 +  Game.game.camera.transform.position.y).get(stack.mallocFloat(16));
+		
+	
+		//setting the view matrix uniform in the default shader
+		glUniformMatrix4fv(projectionMatrixUniformPath,false,fb);
+	
+		}
+	boolean keepRendering = true;
+    int usedTexture = 0;
+    while(keepRendering){
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	if(unrenderedSpriteRenderers ==  0)
+	break;
+    //we render one texture every draw call 
+    int textureID = TexturesManager.texturesManager().getAlTextures().get(usedTexture).getID();
+    glBindTexture(GL_TEXTURE_2D,TexturesManager.texturesManager().getAlTextures().get(textureID).openglID);
+    //putting all the vertices data into one array
+     vertices = new float[spriteRenderers.size() * 32];
 	 indices = new int[spriteRenderers.size() * 6];
-       //putting all the vertices data into one array
-	   
 	for(int i = 0;i < spriteRenderers.size();i++){
+		if(spriteRenderers.get(i).getTextureID() != textureID)
+		continue;
+
 		 spriteRendererVertices = spriteRenderers.get(i).getVertices();
 	     spriteRendererIndices = spriteRenderers.get(i).getIndices();
          
 		
-        for(int j = 0;j < 24;j++){
+        for(int j = 0;j < 32;j++){
 			if(j < 6){
 				indices[i * 6 + j] = spriteRendererIndices[j] + i * 4;
 			}
-			vertices[i * 24 + j] = spriteRendererVertices[j];
+			vertices[i * 32 + j] = spriteRendererVertices[j];
 		}
+    unrenderedSpriteRenderers--;
 	}
      camXsize =  Game.game.camera.acpectRatio[0] * Game.game.camera.getSize();
 	 camYsize =  Game.game.camera.acpectRatio[1] * Game.game.camera.getSize();
      
-    //computing the camera view matrix
-	try (MemoryStack stack = MemoryStack.stackPush()) {
-
-	//computing the matrix & storing it in a float buffer 
-	FloatBuffer fb = new Matrix4f().
-	ortho2D(-camXsize /2 + Game.game.camera.transform.position.x,camXsize / 2 + Game.game.camera.transform.position.x,-camYsize /2 +  Game.game.camera.transform.position.y,camYsize / 2 +  Game.game.camera.transform.position.y).get(stack.mallocFloat(16));
-    
-
-	//setting the view matrix uniform in the default shader
-    glUniformMatrix4fv(projectionMatrixUniformPath,false,fb);
-
-	}
     glBindBuffer(GL_ARRAY_BUFFER,bufferID);
     glBufferData(GL_ARRAY_BUFFER,vertices,GL_DYNAMIC_DRAW);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,indexBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices,GL_DYNAMIC_DRAW);
-   
 
-	  glClear(GL_COLOR_BUFFER_BIT); // clear the framebuffer
-      glDrawElements(GL11.GL_TRIANGLES,indices.length,GL11.GL_UNSIGNED_INT,0);
-	  glfwSwapBuffers(window); // swap the color buffers
+    glDrawElements(GL11.GL_TRIANGLES,indices.length,GL11.GL_UNSIGNED_INT,0);	
+	glBindTexture(GL_TEXTURE_2D,0);
+	usedTexture++;
+    if(unrenderedSpriteRenderers < 1)
+	keepRendering = false;
+        }
+	glfwSwapBuffers(window); // swap the color buffers
+
 			
-	  // Poll for window events. The key callback above will only be
+	 // Poll for window events. The key callback above will only be
 	 // invoked during this call.
 	glfwPollEvents();
-		}
+
+	}
 		
   public void onCloseWindow(){
     if(glfwWindowShouldClose(window)){
