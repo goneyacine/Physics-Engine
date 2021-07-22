@@ -6,6 +6,7 @@ import com.physicsEngine.components.rendering.Cam;
 import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.customExceptions.NoSceneAttachedToGameException;
 import com.physicsEngine.rendering.*;
+import Inputs.InputManager;
 
 public class Game implements Runnable {
 	//there should be only one game instance
@@ -44,6 +45,7 @@ public class Game implements Runnable {
 	 this.scenes = scenes;
 	 runningScene = scenes.get(0);
 	 TexturesManager texturesManager = new TexturesManager();
+	 new InputManager(renderer.getWindow());
 	}
 	public static void setUp(List<Scene> scenes) {
 		game = new Game(scenes);

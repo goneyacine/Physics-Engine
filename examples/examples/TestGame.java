@@ -33,6 +33,9 @@ public class TestGame {
         GameObject gameObject = new GameObject(null,"hello");
         new SpriteRenderer(gameObject,img2);
         sceneObjects.add(gameObject);
+        gameObject.transform.position.x = 50;
+        gameObject.transform.position.y = 30;
+        gameObject.addComponent(new TestComp(gameObject));
   
         Game.game.runGame();
     }

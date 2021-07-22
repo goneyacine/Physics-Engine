@@ -34,7 +34,6 @@ public class Renderer {
   private float[] spriteRendererVertices;
   private int[] spriteRendererIndices;
   private int defaultShaderID;
-
  public Renderer(){
    initWindow();
  }
@@ -224,6 +223,9 @@ public class Renderer {
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
     }
+  }
+  public long getWindow(){
+	  return window;
   }
 
   }
