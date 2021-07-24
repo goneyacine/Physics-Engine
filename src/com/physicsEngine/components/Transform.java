@@ -2,7 +2,6 @@
 package com.physicsEngine.components;
 
 import com.physicsEngine.GameObject;
-import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.vectors.*;
 
 public class Transform extends Component {

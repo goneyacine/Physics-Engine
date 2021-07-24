@@ -3,7 +3,14 @@ package com.physicsEngine.components.rendering;
 import com.physicsEngine.components.*;
 import com.physicsEngine.*;
 import com.physicsEngine.vectors.*;
+
+import static org.lwjgl.glfw.GLFW.*;
+
+import Inputs.InputManager;
+
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
+
 import com.physicsEngine.rendering.*;
 
 public class SpriteRenderer extends Component {
@@ -95,16 +102,18 @@ public class SpriteRenderer extends Component {
     float[] finalWorldSize = {(float)Math.sqrt(getWorldSpaceSize().x * getWorldSpaceSize().x + getWorldSpaceSize().x * getWorldSpaceSize().x ) * transform.scale.x 
     ,(float)Math.sqrt(getWorldSpaceSize().y * getWorldSpaceSize().y + getWorldSpaceSize().y * getWorldSpaceSize().y ) * transform.scale.y};
 
-    //this is the angle made by the line between the camera center & this object
-     float objectAngleAroundCam  = (float)Math.atan2(transform.position.y / Vector2.distance(transform.position, Game.game.camera.transform.position), 
-     transform.position.x / Vector2.distance(transform.position, Game.game.camera.transform.position));
-    // here we rotate the position of this object in the oposite of the camera rotation
-   float[] finalPos = {(float)Math.cos(Math.toRadians(Math.toDegrees(objectAngleAroundCam) - Game.game.camera.gameObject.transform.zAngle)) * Vector2.distance(transform.position, Game.game.camera.transform.position), 
-    (float)Math.sin(Math.toRadians(Math.toDegrees(objectAngleAroundCam) - Game.game.camera.gameObject.transform.zAngle)) * Vector2.distance(transform.position, Game.game.camera.transform.position)};
 
+    float distance = Vector2.distance(Vector2.subtract(transform.position,Game.game.camera.transform.position), Vector2.zero());
+    //this is the angle made by the line between the camera center & this object
+     float objectAngleAroundCam  = (float)Math.atan2((transform.position.y - Game.game.camera.transform.position.y) / distance, 
+     (transform.position.x - Game.game.camera.transform.position.x) / distance);
+    // here we rotate the position of this object in the oposite of the camera rotation
+   float[] finalPos = {(float)Math.cos(Math.toRadians(Math.toDegrees(objectAngleAroundCam) - Game.game.camera.transform.zAngle) ) * Vector2.distance(transform.position, Game.game.camera.transform.position), 
+    (float)Math.sin(Math.toRadians(Math.toDegrees(objectAngleAroundCam) - Game.game.camera.transform.zAngle)) * Vector2.distance(transform.position, Game.game.camera.transform.position)};
+    
     //setting first vertex data
-    vertices[0] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 45 - Game.game.camera.transform.zAngle)) + finalPos[0]);
-    vertices[1] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 45 - Game.game.camera.transform.zAngle)) + finalPos[1]);
+    vertices[0] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 45 - Game.game.camera.transform.zAngle)) + (finalPos[0] - Game.game.camera.transform.position.x));
+    vertices[1] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 45 - Game.game.camera.transform.zAngle)) + (finalPos[1] - Game.game.camera.transform.position.y));
     vertices[2] = color[0];
     vertices[3] = color[1];
     vertices[4] = color[2];
@@ -113,8 +122,8 @@ public class SpriteRenderer extends Component {
     vertices[7] = 0;
 
     //setting the second vertex data
-    vertices[8] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 135- Game.game.camera.transform.zAngle)) + finalPos[0]);
-    vertices[9] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 135- Game.game.camera.transform.zAngle)) + finalPos[1]);
+    vertices[8] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 135- Game.game.camera.transform.zAngle)) + (finalPos[0] - Game.game.camera.transform.position.x));
+    vertices[9] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 135- Game.game.camera.transform.zAngle)) + (finalPos[1] - Game.game.camera.transform.position.y));
     vertices[10] = color[0];
     vertices[11] = color[1];
     vertices[12] = color[2];
@@ -123,8 +132,8 @@ public class SpriteRenderer extends Component {
     vertices[15] = 0;
     
     //setting the third vertex data
-    vertices[16] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 225 - Game.game.camera.transform.zAngle)) + finalPos[0]);
-    vertices[17] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 225 - Game.game.camera.transform.zAngle )) + finalPos[1]);
+    vertices[16] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 225 - Game.game.camera.transform.zAngle)) + (finalPos[0] - Game.game.camera.transform.position.x));
+    vertices[17] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 225 - Game.game.camera.transform.zAngle )) +(finalPos[1] - Game.game.camera.transform.position.y));
     vertices[18] = color[0];
     vertices[19] = color[1];
     vertices[20] = color[2];
@@ -132,8 +141,8 @@ public class SpriteRenderer extends Component {
     vertices[22] = 0;
     vertices[23] = 1;
     //setting the fourth vetex data
-    vertices[24] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 315 - Game.game.camera.transform.zAngle)) + finalPos[0]);
-    vertices[25] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 315 - Game.game.camera.transform.zAngle)) + finalPos[1]);
+    vertices[24] = (float) (finalWorldSize[0] * Math.cos(Math.toRadians(transform.zAngle + 315 - Game.game.camera.transform.zAngle)) + (finalPos[0] - Game.game.camera.transform.position.x));
+    vertices[25] = (float) (finalWorldSize[1] * Math.sin(Math.toRadians(transform.zAngle + 315 - Game.game.camera.transform.zAngle)) + (finalPos[1] - Game.game.camera.transform.position.y));
     vertices[26] = color[0];
     vertices[27] = color[1];
     vertices[28] = color[2];

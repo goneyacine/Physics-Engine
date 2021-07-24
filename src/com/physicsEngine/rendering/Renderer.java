@@ -154,7 +154,7 @@ public class Renderer {
 
 		//computing the matrix & storing it in a float buffer 
 		FloatBuffer fb = new Matrix4f().
-		ortho2D(-camXsize /2 + Game.game.camera.transform.position.x,camXsize / 2 + Game.game.camera.transform.position.x,-camYsize /2 +  Game.game.camera.transform.position.y,camYsize / 2 +  Game.game.camera.transform.position.y).get(stack.mallocFloat(16));
+		ortho2D(-camXsize /2,camXsize / 2 ,-camYsize /2 ,camYsize / 2).get(stack.mallocFloat(16));
 		
 	
 		//setting the view matrix uniform in the default shader
