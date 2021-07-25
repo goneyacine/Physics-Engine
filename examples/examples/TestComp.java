@@ -3,7 +3,6 @@ package examples;
 import com.physicsEngine.*;
 import com.physicsEngine.components.*;
 
-import org.lwjgl.system.windows.INPUT;
 
 import Inputs.InputManager;
 import static org.lwjgl.glfw.GLFW.*;
@@ -32,6 +31,7 @@ public class TestComp extends Component{
         Game.game.camera.transform.position.x -= .5f;
 
         if(InputManager.inputManager().getMouseDown(InputManager.MOUSE_BUTTON_LEFT))
-        System.out.println(InputManager.inputManager().mousePosition().x + " .... " + InputManager.inputManager().mousePosition().y);
+        System.out.println("FPS = " + Game.game.getFrames() + " ... UPS = " + Game.game.getUpdates());
     }
+
 }

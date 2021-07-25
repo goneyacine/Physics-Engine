@@ -3,6 +3,7 @@ package com.physicsEngine;
 import java.util.List;
 
 import com.physicsEngine.components.Component;
+import com.physicsEngine.components.rendering.SpriteRenderer;
 
 import java.util.*;
 public class Scene {
@@ -19,6 +20,9 @@ public class Scene {
      */
     public void addGameObejct(GameObject gObject){
     gameObjects.add(gObject);
+    gObject.onEnable();
+    if(gObject.hasSpriteRenderer)
+    Game.game.addSpriteRenderer((SpriteRenderer)gObject.getComponent("Sprite Renderer"));
     }
     /**
      * 
@@ -26,9 +30,6 @@ public class Scene {
      */
     public List<GameObject> getGameObjects(){
     return gameObjects;
-    }
-    public void setGameObjects(List<GameObject> gameObjects){
-    this.gameObjects = gameObjects;
     }
 
     /**
@@ -51,5 +52,13 @@ public class Scene {
                 comp.update();
             }
         }
+    }
+    /**
+     * destroy gameObject from the target scene & call the onDestoy function of that object if target scene is the running scene
+     * @param gameObject
+     */
+    public void destroyGameObject(GameObject gameObject){
+    if(gameObjects.remove(gameObject) && Game.game.getRunningScene().equals(this))
+    gameObject.onDestroy();
     }
 }

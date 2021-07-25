@@ -12,6 +12,8 @@ public class Cam extends Component {
   
   /** the acpect ratio of the camera veiw */
   public float[] acpectRatio;
+  
+  private float viewSpace;
 
   /**
    *
@@ -24,9 +26,9 @@ public class Cam extends Component {
     this.transform = gameObject.transform;
     this.acpectRatio = acpectRatio;
     this.size = size;
-
     Game.game.camera = this;
-
+    computeViewSpace();
+    
   }
   /**
    * sets the acpect ratio of camera view space
@@ -34,6 +36,7 @@ public class Cam extends Component {
    */
   public void setAcpectRatio(float[] acpectRatio){
     this.acpectRatio = acpectRatio;
+    computeViewSpace();
   }
   /**
    * 
@@ -55,5 +58,17 @@ public class Cam extends Component {
    */
   public void setSize(float size) {
     this.size = size;
+    computeViewSpace();
+  }
+
+  private void computeViewSpace(){
+  viewSpace = (float)Math.sqrt(Math.pow(Game.game.camera.getSize() * Game.game.camera.getAcpectRatio()[0],2) + Game.game.camera.getSize() * Math.pow(Game.game.camera.getAcpectRatio()[1],2));
+  }
+  /**
+   * 
+   * @return the raduis of the circle surounding the view rectangle 
+   */
+  public float getViewSpace(){
+    return viewSpace;
   }
 }

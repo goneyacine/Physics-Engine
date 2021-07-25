@@ -2,15 +2,10 @@ package Inputs;
 
 import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.*;
-import java.util.*;
 
 import com.physicsEngine.vectors.Vector2;
 
 public class InputManager {
-    // the mouse buttons that are still pressed
-    private List<Integer> pressedMouseButtons = new ArrayList<Integer>();
-    // the mouse buttons that pressed down(once)
-    private List<Integer> pressedDownMouseButtons = new ArrayList<Integer>();
 
     private Vector2 mousePosition = new Vector2(0, 0);
 

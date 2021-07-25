@@ -68,4 +68,19 @@ public class GameObject {
   public List<Component> getAllComponents(){
       return components;
   }
+
+  public void onEnable(){
+      for(Component comp : components)
+      comp.onEnable();
+  }
+  public void onDisbale(){
+      for(Component comp : components)
+         comp.onDisbale();
+  }
+  public void onDestroy(){
+      for(Component comp : components){
+          comp.onDestroy();
+          comp.onDisbale();
+      }
+  }
 }

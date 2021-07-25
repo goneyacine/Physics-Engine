@@ -5,12 +5,13 @@ import java.nio.*;
 
 import com.physicsEngine.Game;
 import com.physicsEngine.components.rendering.SpriteRenderer;
+import com.physicsEngine.vectors.Vector2;
 
 import org.joml.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
-
+import java.util.*;
 import shaders.ShaderCompiler;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -145,8 +146,13 @@ public class Renderer {
 	//checks there is camera object, if there no camera then we don't need to render 
 	if(Game.game.camera == null)
 	return;
+	/** the indicies of the sprite renderers that should be rendered */
+    List<Integer> shouldRendereSpriteRenderers = new ArrayList<Integer>();
+    for(int i = 0; i < spriteRenderers.size();i++)
+	    if(Vector2.distance(Game.game.camera.transform.position, spriteRenderers.get(i).transform.position) < Game.game.camera.getViewSpace() + spriteRenderers.get(i).getWorldSpaceRaduis())
+		shouldRendereSpriteRenderers.add(i);
 
-    int unrenderedSpriteRenderers = spriteRenderers.size();
+    int unrenderedSpriteRenderers = shouldRendereSpriteRenderers.size();
     
 	glClear(GL_COLOR_BUFFER_BIT); // clear the framebuffer
         //computing the camera view matrix
@@ -174,12 +180,12 @@ public class Renderer {
     //putting all the vertices data into one array
      vertices = new float[spriteRenderers.size() * 32];
 	 indices = new int[spriteRenderers.size() * 6];
-	for(int i = 0;i < spriteRenderers.size();i++){
-		if(spriteRenderers.get(i).getTextureID() != textureID)
+	for(int i = 0;i < shouldRendereSpriteRenderers.size();i++){
+		if(spriteRenderers.get(shouldRendereSpriteRenderers.get(i)).getTextureID() != textureID)
 		continue;
 
-		 spriteRendererVertices = spriteRenderers.get(i).getVertices();
-	     spriteRendererIndices = spriteRenderers.get(i).getIndices();
+		 spriteRendererVertices = spriteRenderers.get(shouldRendereSpriteRenderers.get(i)).getVertices();
+	     spriteRendererIndices = spriteRenderers.get(shouldRendereSpriteRenderers.get(i)).getIndices();
          
 		
         for(int j = 0;j < 32;j++){

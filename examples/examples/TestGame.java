@@ -20,20 +20,28 @@ public class TestGame {
         scenes.add(scene);
         Game.setUp(scenes);
         GameObject camObject =  new GameObject(null, "cam");
-        camObject.transform.position.x = -50;
         float[] acpectRatio = {16,9};
          new Cam(camObject,20, acpectRatio);
        BufferedImage img2 = null;
        BufferedImage img1 = null;
 
 		try {
-			img2 = ImageIO.read(new File("C:\\Users\\dtech\\Castle Boomer\\Assets\\Sprites\\the new style of the game\\jungle background.png"));
+			img2 = ImageIO.read(new File("C:\\Users\\dtech\\Pictures\\Hello World.png"));
 			img1 = ImageIO.read(new File("C:\\Users\\dtech\\Castle Boomer\\Assets\\Sprites\\the new style of the game\\mobile game buttons.png"));
 
 
 		} catch (IOException e) {
             System.out.println(e);
         }
+        for(int i = 1; i < 5;i++)
+           for (int j = 1;j < 5;j++){
+        GameObject gameObject = new GameObject(null,"BB");
+        new SpriteRenderer(gameObject,img2);
+        gameObject.transform.position.x = i;
+        gameObject.transform.position.y = j;
+        gameObject.transform.scale.x = .06f;
+        gameObject.transform.scale.y = .06f;
+           }
         GameObject gameObject = new GameObject(null,"BB");
         new SpriteRenderer(gameObject,img2);
         sceneObjects.add(gameObject);
