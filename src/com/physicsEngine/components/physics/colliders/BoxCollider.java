@@ -15,4 +15,13 @@ public class BoxCollider extends Collider {
 		shape = new Box(size.x, size.y);
 		name = "box collider";
 	}
+
+	public void computeMinMax() {
+		// computing the min point position
+		minMax[0][0] = gameObject.transform.position.x - size.x / 2 + center.x;
+		minMax[0][1] = gameObject.transform.position.y - size.y / 2 + center.y;
+		// computing the max point position
+		minMax[1][0] = gameObject.transform.position.x + size.x / 2 + center.x;
+		minMax[1][1] = gameObject.transform.position.y + size.y / 2 + center.y;
+	}
 }
