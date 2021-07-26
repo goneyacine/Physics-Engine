@@ -18,8 +18,16 @@ public class PhysicsManager {
 	/** 0 if it's the x axis & 1 if it's the y axis */
 	private int longestAxis;
 
+	private BVHTree bvhTree;
+
 	public PhysicsManager() {
 		physicsManager = this;
+		bvhTree = new BVHTree(new BVHNode(null));
+	}
+    
+	public void setUpPhysics(){
+	for(Collider collider : colliders)
+	bvhTree.root.addCollider(collider);
 	}
 
 	public static void setDeletaTime(float dt) {
@@ -101,9 +109,7 @@ public class PhysicsManager {
 		 * @param colliders
 		 * @param childs
 		 */
-		public BVHNode(List<Collider> colliders, List<BVHNode> childs) {
-			if (colliders != null)
-				this.colliders = colliders;
+		public BVHNode(List<BVHNode> childs) {
 			if (childs != null)
 				this.childs = childs;
 		}
@@ -115,10 +121,14 @@ public class PhysicsManager {
 		public void addCollider(Collider collider) {
 			if (!colliders.contains(collider))
 				colliders.add(collider);
+
+			computeLongestAxis();	
 		}
 
 		public void removeCollider(Collider collider) {
 			colliders.remove(collider);
+
+			computeLongestAxis();
 		}
 
 		public void removeAllColliders() {
@@ -147,13 +157,14 @@ public class PhysicsManager {
 			  else
 			  scrapeColliders(this);
 			}
+            computeLongestAxis();
 
 			sortCollidersList();
 			if(colliders.size() > 2)
 			{
 			 childs = new ArrayList<BVHNode>();
-			BVHNode child1 = new BVHNode(null,null);
-			BVHNode child2 = new BVHNode(null,null);
+			BVHNode child1 = new BVHNode(null);
+			BVHNode child2 = new BVHNode(null);
 			for(int i = 0;i < colliders.size();i++){
 				if(i + 1 < colliders.size() / 2)
 				child1.addCollider(colliders.get(i));
@@ -162,6 +173,11 @@ public class PhysicsManager {
 			}
 			childs.add(child1);
 			childs.add(child2);
+		    colliders = new ArrayList<Collider>();
+			if(child1.getColliders().size() > 2)
+			child1.splitCollidersList();
+			if(child2.getColliders().size() > 2)
+			child2.splitCollidersList();
 			}
 		}
 
@@ -238,6 +254,32 @@ public class PhysicsManager {
 		/** removes all childs from childs list */
 		public void removeAllChilds() {
 			childs = new ArrayList<BVHNode>();
+		}
+        
+		public void computeLongestAxis(){
+        if(colliders.size() == 0)
+		return;                              
+		
+        float[] minPoint = colliders.get(0).getMinMax()[0];
+        float[] maxPoint = colliders.get(0).getMinMax()[1];
+		for(Collider collider : colliders){
+		   if(collider.getMinMax()[0][0] < minPoint[0])
+           minPoint[0] = collider.getMinMax()[0][0];
+		   
+		   if(collider.getMinMax()[1][0] > maxPoint[0])
+           maxPoint[0] = collider.getMinMax()[1][0];
+
+		   if(collider.getMinMax()[0][1] < minPoint[1])
+           minPoint[0] = collider.getMinMax()[0][1];
+		   
+		   if(collider.getMinMax()[1][1] > maxPoint[1])
+           maxPoint[0] = collider.getMinMax()[1][1];
+        
+		}
+		if(maxPoint[0] - minPoint[0] > maxPoint[1] - minPoint[1])
+		longestAxis = 0;
+		else 
+		longestAxis = 1;
 		}
 	}
 }
