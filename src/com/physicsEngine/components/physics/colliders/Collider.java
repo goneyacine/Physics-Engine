@@ -4,11 +4,13 @@ package com.physicsEngine.components.physics.colliders;
 import com.physicsEngine.shapes.*;
 import com.physicsEngine.components.*;
 import com.physicsEngine.physics.PhysicsManager;
+import com.physicsEngine.physics.PhysicsManager.BVHNode;
 
 public class Collider extends Component {
 
 	public Shape shape;
 	public String name;
+	public BVHNode bvhNode;
 	/**
 	 * min is the button left point of the AABB box of this collider & max is the
 	 * top right point

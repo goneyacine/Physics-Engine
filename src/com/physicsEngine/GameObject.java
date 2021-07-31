@@ -2,6 +2,7 @@
 package com.physicsEngine;
 
 import com.physicsEngine.components.*;
+import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.vectors.*;
 import java.util.*;
 
@@ -11,6 +12,7 @@ public class GameObject {
     public String name;
     private List<Component> components = new ArrayList<Component>();
     public boolean hasSpriteRenderer = false;
+    private SpriteRenderer spriteRenderer;
     public GameObject(Transform transform, String name) {
         //setting up the tranform component so we can position the gameobject
         if (transform == null)
@@ -46,9 +48,22 @@ public class GameObject {
           System.err.println("Can't Added A Component To " + name + " GameObject Because It Already Contains A Component With The Same Type");
           return;
           }
+       
+       if(component.name != null)   
+       if(component.name.equals("Sprite Renderer"))
+       spriteRenderer = (SpriteRenderer)component;
 
       components.add(component);
-  } 
+      component.gameObject = this;
+      component.onEnable();
+  }
+  /**
+   * 
+   * @return the spriteRenderer componenet of this object & null if there no spriteRenderer
+   */
+  public SpriteRenderer spriteRenderer(){
+    return spriteRenderer;
+  }
 
    /**
    * removes component from gameObject 

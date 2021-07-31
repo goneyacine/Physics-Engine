@@ -5,6 +5,7 @@ import java.util.List;
 import com.physicsEngine.components.rendering.Cam;
 import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.customExceptions.NoSceneAttachedToGameException;
+import com.physicsEngine.physics.PhysicsManager;
 import com.physicsEngine.rendering.*;
 import Inputs.InputManager;
 
@@ -48,6 +49,7 @@ public class Game implements Runnable {
 		this.scenes = scenes;
 		runningScene = scenes.get(0);
 		TexturesManager texturesManager = new TexturesManager();
+		PhysicsManager physicsManager = new PhysicsManager();
 		new InputManager(renderer.getWindow());
 	}
 

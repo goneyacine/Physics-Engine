@@ -13,16 +13,16 @@ public class CircleCollider extends Collider {
 		this.radius = radius;
 		this.center = center;
 		shape = new Circle(radius);
-		name = "circle collider";
+		super.name  = "circle collider";
 	}
 
 	public void computeMinMax() {
 		// computing the min point position
-		minMax[0][0] = gameObject.transform.position.x - radius / 2 + center.x;
-		minMax[0][1] = gameObject.transform.position.y - radius / 2 + center.y;
-		// computing the max point position
-		minMax[1][0] = gameObject.transform.position.x + radius / 2 + center.x;
-		minMax[1][1] = gameObject.transform.position.y + radius / 2 + center.y;
+		minMax[0][0] = gameObject.transform.position.x - radius * gameObject.transform.scale.x  + center.x;
+		minMax[0][1] = gameObject.transform.position.y - radius * gameObject.transform.scale.y  + center.y;
+		// computing the max point positioy
+		minMax[1][0] = gameObject.transform.position.x + radius * gameObject.transform.scale.x  + center.x;
+		minMax[1][1] = gameObject.transform.position.y + radius * gameObject.transform.scale.y  + center.y;
 	}
 
 }

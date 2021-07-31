@@ -7,7 +7,7 @@ import com.physicsEngine.components.rendering.SpriteRenderer;
 
 import java.util.*;
 public class Scene {
-    private List<GameObject> gameObjects = new ArrayList<GameObject>();
+    public List<GameObject> gameObjects = new ArrayList<GameObject>();
     public String name;
     
     public Scene(List<GameObject> gameObjects,String name){
@@ -47,11 +47,16 @@ public class Scene {
      * this method is used to run all the update methods of all gameobjects compoenents attached to the scene
      */
     public void update(){
+        try{
         for(GameObject gameObject : gameObjects){
             for(Component comp : gameObject.getAllComponents()){
                 comp.update();
             }
         }
+    }catch(Exception e){
+        System.err.println(e);
+        return;
+    }
     }
     /**
      * destroy gameObject from the target scene & call the onDestoy function of that object if target scene is the running scene

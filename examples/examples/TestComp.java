@@ -2,7 +2,7 @@ package examples;
 
 import com.physicsEngine.*;
 import com.physicsEngine.components.*;
-
+import com.physicsEngine.physics.PhysicsManager;
 
 import Inputs.InputManager;
 import static org.lwjgl.glfw.GLFW.*;
@@ -11,6 +11,7 @@ public class TestComp extends Component{
 
     public TestComp(GameObject gameObject){
         this.gameObject = gameObject;
+        name = "ffff";
     }
 
     public void update(){
@@ -32,6 +33,11 @@ public class TestComp extends Component{
 
         if(InputManager.inputManager().getMouseDown(InputManager.MOUSE_BUTTON_LEFT))
         System.out.println("FPS = " + Game.game.getFrames() + " ... UPS = " + Game.game.getUpdates());
+
+        if(InputManager.inputManager().getKeyDown(InputManager.KEY_1)){
+            PhysicsManager.physicsManager().reloadPhysics();
+            System.out.println(PhysicsManager.physicsManager().bvhTree.toString());
+        }
     }
 
 }
