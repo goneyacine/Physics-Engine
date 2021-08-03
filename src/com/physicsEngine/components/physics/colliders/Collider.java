@@ -43,4 +43,8 @@ public class Collider extends Component {
 		return minMax;
 	}
 
+	public void onCollisionEnter(Collider other){
+		
+	}
+
 }

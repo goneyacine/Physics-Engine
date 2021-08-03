@@ -59,30 +59,31 @@ public class PhysicsManager {
 		return physicsManager;
 	}
 
-	public void physicsUpdate(){
-	collisionUpdate();
+	public void physicsUpdate() {
+		collisionUpdate();
 	}
-	private void collisionUpdate(){
-	for(int i = bvhTreeLayers.size() - 1; i >= 0;i--){
-		for(BVHNode node : bvhTreeLayers.get(i)){
 
-		for(int j = 0;j < node.getColliders().size();j++){
-			checkInterceptionColliderColliders(node.getColliders().get(j),node.getColliders());
-		}
+	private void collisionUpdate() {
+		for (int i = bvhTreeLayers.size() - 1; i >= 0; i--) {
+			for (BVHNode node : bvhTreeLayers.get(i)) {
 
-		for(BVHNode n : node.getchilds())
-		checkInterceptionNodeColliders(n, node.getColliders());
+				for (int j = 0; j < node.getColliders().size(); j++) {
+					checkInterceptionColliderColliders(node.getColliders().get(j), node.getColliders());
+				}
 
-		for(int j = 0;j < node.getchilds().size();j++){
-			for(BVHNode n : node.getchilds()){
-				if(n.equals(node.getchilds().get(j)))
-				continue;
+				for (BVHNode n : node.getchilds())
+					checkInterceptionNodeColliders(n, node.getColliders());
 
-				checkInterceptionNodeNode(n, node.getchilds().get(j));
+				for (int j = 0; j < node.getchilds().size(); j++) {
+					for (BVHNode n : node.getchilds()) {
+						if (n.equals(node.getchilds().get(j)))
+							continue;
+
+						checkInterceptionNodeNode(n, node.getchilds().get(j));
+					}
+				}
 			}
 		}
-		}
-	}
 	}
 
 	/**
@@ -94,8 +95,8 @@ public class PhysicsManager {
 	private void checkInterceptionColliderColliders(Collider a, List<Collider> colliders) {
 		for (Collider collider : colliders) {
 
-             if(a.equals(collider))
-			 continue;
+			if (a.equals(collider))
+				continue;
 
 			if (a.getMinMax()[0][0] <= collider.getMinMax()[1][0] && a.getMinMax()[0][0] >= collider.getMinMax()[0][0]
 					&& a.getMinMax()[0][1] <= collider.getMinMax()[1][1]
@@ -119,7 +120,15 @@ public class PhysicsManager {
 		}
 	}
 
+	/**
+	 * checks if a node a node intercepts with a box that surounds a collider
+	 * 
+	 * @param node     the BVHNode we check interception with
+	 * @param collider the Collider we check interception with
+	 */
 	private void checkInterceptionNodeCollider(BVHNode node, Collider collider) {
+		// checks if there is an interception between the node box & the box that
+		// surounds the collider
 		if ((node.getMinMax()[0][0] <= collider.getMinMax()[1][0]
 				&& node.getMinMax()[0][0] >= collider.getMinMax()[0][0]
 				&& node.getMinMax()[0][1] <= collider.getMinMax()[1][1]
@@ -136,13 +145,15 @@ public class PhysicsManager {
 						&& node.getMinMax()[0][0] >= collider.getMinMax()[0][0]
 						&& node.getMinMax()[1][1] <= collider.getMinMax()[1][1]
 						&& node.getMinMax()[1][1] >= collider.getMinMax()[0][1])) {
+			// if there an interception :
 
+			// we check if any of the node colliders collides with that collider
 			for (Collider co : node.getColliders()) {
 
 				checkCollision(collider, co);
 
 			}
-
+			// we check if any of the node BVHNode childs intercepts with that collider
 			for (BVHNode n : node.getchilds()) {
 				checkInterceptionNodeCollider(n, collider);
 			}
@@ -150,7 +161,14 @@ public class PhysicsManager {
 
 	}
 
+	/**
+	 * checks if a node a node intercepts with a list of colliders
+	 * 
+	 * @param node      node to be checked
+	 * @param colliders list of colliders to be checked
+	 */
 	private void checkInterceptionNodeColliders(BVHNode node, List<Collider> colliders) {
+		// we check if there an interception for every collider in the colliders list
 		for (Collider collider : colliders) {
 			if ((node.getMinMax()[0][0] <= collider.getMinMax()[1][0]
 					&& node.getMinMax()[0][0] >= collider.getMinMax()[0][0]
@@ -168,11 +186,13 @@ public class PhysicsManager {
 							&& node.getMinMax()[0][0] >= collider.getMinMax()[0][0]
 							&& node.getMinMax()[1][1] <= collider.getMinMax()[1][1]
 							&& node.getMinMax()[1][1] >= collider.getMinMax()[0][1])) {
+				// if there is an interception
 
+				// we check if any of the node colliders collides with that collider
 				for (Collider co : node.getColliders()) {
 					checkCollision(collider, co);
 				}
-
+				// we check if any of the node BVHNode childs intercepts with that collider
 				for (BVHNode n : node.getchilds()) {
 					checkInterceptionNodeCollider(n, collider);
 				}
@@ -181,7 +201,14 @@ public class PhysicsManager {
 		}
 	}
 
+	/**
+	 * checks if two nodes intercepts with each others
+	 * 
+	 * @param a first node
+	 * @param b second node
+	 */
 	private void checkInterceptionNodeNode(BVHNode a, BVHNode b) {
+		// checking for interception
 		if ((a.getMinMax()[0][0] <= b.getMinMax()[1][0] && a.getMinMax()[0][0] >= b.getMinMax()[0][0]
 				&& a.getMinMax()[0][1] <= b.getMinMax()[1][1] && a.getMinMax()[0][1] >= b.getMinMax()[0][1])
 				|| (a.getMinMax()[1][0] <= b.getMinMax()[1][0] && a.getMinMax()[1][0] >= b.getMinMax()[0][0]
@@ -190,16 +217,25 @@ public class PhysicsManager {
 						&& a.getMinMax()[0][1] <= b.getMinMax()[1][1] && a.getMinMax()[0][1] >= b.getMinMax()[0][1])
 				|| (a.getMinMax()[0][0] <= b.getMinMax()[1][0] && a.getMinMax()[0][0] >= b.getMinMax()[0][0]
 						&& a.getMinMax()[1][1] <= b.getMinMax()[1][1] && a.getMinMax()[1][1] >= b.getMinMax()[0][1])) {
+			// if there an interception :
 
-		for(BVHNode nodeA : a.getchilds())
-		    for(BVHNode nodeB : b.getchilds())
-            checkInterceptionNodeNode(nodeA,nodeB);
-		for(Collider colliderA : a.getColliders())
-		    for(Collider colliderB : b.getColliders())
-			checkCollision(colliderA,colliderB);
+			// we check if there is an interception between every node from the first node
+			// childs list & the second node childs list
+			for (BVHNode nodeA : a.getchilds())
+				for (BVHNode nodeB : b.getchilds())
+					checkInterceptionNodeNode(nodeA, nodeB);
+			// we check if there is an interception between every collider from the first
+			// node & the second node
+			for (Collider colliderA : a.getColliders())
+				for (Collider colliderB : b.getColliders())
+					checkCollision(colliderA, colliderB);
 
-		checkInterceptionNodeColliders(a,b.getColliders());
-		checkInterceptionNodeColliders(b,a.getColliders());
+			// checks if there is an interception between the first node & the colliders of
+			// the second node
+			checkInterceptionNodeColliders(a, b.getColliders());
+			// checks if there is an interception between the second node & the colliders of
+			// the first node
+			checkInterceptionNodeColliders(b, a.getColliders());
 
 		}
 	}
@@ -233,18 +269,72 @@ public class PhysicsManager {
 			colliders.add(collider);
 	}
 
+	/**
+	 * checks if two colliders collides with each others
+	 * 
+	 * @param a first collider
+	 * @param b second collider
+	 */
 	private void checkCollision(Collider a, Collider b) {
-	CircleCollider c = (CircleCollider)a;
-	CircleCollider d = (CircleCollider)b;
-	if(Vector2.distance(c.gameObject.transform.position, d.gameObject.transform.position) <= c.radius + d.radius){
-    a.gameObject.spriteRenderer().color[0] = 1;
-    b.gameObject.spriteRenderer().color[0] = 1;
-    a.gameObject.spriteRenderer().color[1] = 0;
-    b.gameObject.spriteRenderer().color[1] = 0;
-	}
+		if (a.name.equals("circle collider")) {
+			if (b.name.equals("circle collider")) {
+				if (Vector2.distance(a.gameObject.transform.position,
+						b.gameObject.transform.position) <= ((CircleCollider) a).radius + ((CircleCollider) b).radius) {
+					a.onCollisionEnter(b);
+					b.onCollisionEnter(a);
+				}
+			} else if (b.name.equals("box collider")) {
+				if (Vector2.distance(new Vector2(b.getMinMax()[0][0], b.getMinMax()[0][1]),
+						b.gameObject.transform.position) <= ((CircleCollider) a).radius
+						|| Vector2.distance(new Vector2(b.getMinMax()[1][0], b.getMinMax()[1][1]),
+								b.gameObject.transform.position) <= ((CircleCollider) a).radius
+						|| Vector2.distance(new Vector2(b.getMinMax()[1][0], b.getMinMax()[0][1]),
+								b.gameObject.transform.position) <= ((CircleCollider) a).radius
+						|| Vector2.distance(new Vector2(b.getMinMax()[0][0], b.getMinMax()[1][1]),
+								b.gameObject.transform.position) <= ((CircleCollider) a).radius) {
+					a.onCollisionEnter(b);
+					b.onCollisionEnter(a);
+				}
+			}
+		} else if (a.name.equals("box collider")) {
+			if (b.name.equals("circle collider")) {
+				if (Vector2.distance(new Vector2(a.getMinMax()[0][0], a.getMinMax()[0][1]),
+						b.gameObject.transform.position) <= ((CircleCollider) b).radius
+						|| Vector2.distance(new Vector2(a.getMinMax()[1][0], a.getMinMax()[1][1]),
+								b.gameObject.transform.position) <= ((CircleCollider) b).radius
+						|| Vector2.distance(new Vector2(a.getMinMax()[1][0], a.getMinMax()[0][1]),
+								b.gameObject.transform.position) <= ((CircleCollider) b).radius
+						|| Vector2.distance(new Vector2(a.getMinMax()[0][0], a.getMinMax()[1][1]),
+								b.gameObject.transform.position) <= ((CircleCollider) b).radius) {
+					a.onCollisionEnter(b);
+					b.onCollisionEnter(a);
+
+				}
+			} else if (b.name.equals("box collider")) {
+				if ((a.getMinMax()[0][0] <= b.getMinMax()[1][0] && a.getMinMax()[0][0] >= b.getMinMax()[0][0]
+						&& a.getMinMax()[0][1] <= b.getMinMax()[1][1] && a.getMinMax()[0][1] >= b.getMinMax()[0][1])
+						|| (a.getMinMax()[1][0] <= b.getMinMax()[1][0] && a.getMinMax()[1][0] >= b.getMinMax()[0][0]
+								&& a.getMinMax()[1][1] <= b.getMinMax()[1][1]
+								&& a.getMinMax()[1][1] >= b.getMinMax()[0][1])
+						|| (a.getMinMax()[1][0] <= b.getMinMax()[1][0] && a.getMinMax()[1][0] >= b.getMinMax()[0][0]
+								&& a.getMinMax()[0][1] <= b.getMinMax()[1][1]
+								&& a.getMinMax()[0][1] >= b.getMinMax()[0][1])
+						|| (a.getMinMax()[0][0] <= b.getMinMax()[1][0] && a.getMinMax()[0][0] >= b.getMinMax()[0][0]
+								&& a.getMinMax()[1][1] <= b.getMinMax()[1][1]
+								&& a.getMinMax()[1][1] >= b.getMinMax()[0][1])) {
+					a.onCollisionEnter(b);
+					b.onCollisionEnter(a);
+				}
+			}
+
+		}
 
 	}
 
+	/**
+	 * the tree that store & struct all the colliders in the runing scene to
+	 * optimize collision detection (using BVH algorithm)
+	 */
 	public class BVHTree {
 		private BVHNode root;
 
@@ -252,10 +342,19 @@ public class PhysicsManager {
 			this.root = root;
 		}
 
+		/**
+		 * 
+		 * @return the root node of the tree
+		 */
 		public BVHNode getRoot() {
 			return root;
 		}
 
+		/**
+		 * sets the root node of the tree
+		 * 
+		 * @param root
+		 */
 		public void setRoot(BVHNode root) {
 			this.root = root;
 		}
@@ -281,32 +380,51 @@ public class PhysicsManager {
 			this.layer = layer;
 		}
 
+		/**
+		 * 
+		 * @return the colliders that are in this node
+		 */
 		public List<Collider> getColliders() {
 			return colliders;
 		}
-
-		public void addCollider(Collider collider) {
+        /**
+		 * adds a collider to the colliders list of BVHNode object
+		 * @param collider
+		 */
+		private void addCollider(Collider collider) {
 			if (!colliders.contains(collider))
 				colliders.add(collider);
 
 			collider.bvhNode = this;
 			computeLongestAxis();
 		}
-
+        /**
+		 * remove a collider from the colliders list of BVHNode object
+		 * @param collider
+		 */
 		public void removeCollider(Collider collider) {
 			colliders.remove(collider);
 
 			computeLongestAxis();
 		}
-
+        /**
+		 * romoves all the colliders from the colliders list of BVHNode object
+		 */
 		public void removeAllColliders() {
 			colliders = new ArrayList<Collider>();
 		}
-
+        /**
+		 *
+		 * @return the BVHNode childs of this node
+		 */
 		public List<BVHNode> getchilds() {
 			return childs;
 		}
-
+        
+		/**
+		 * gets all the collider from the child nodes & make the childs list empty
+		 * @param parent
+		 */
 		public void scrapeColliders(BVHNode parent) {
 			for (BVHNode child : parent.getchilds()) {
 				if (child.colliders.size() == 0)
@@ -318,7 +436,7 @@ public class PhysicsManager {
 			}
 			parent.childs = new ArrayList<BVHNode>();
 		}
-
+        /** splits the node into two parts */
 		public void splitCollidersList() {
 			if (colliders.size() == 0) {
 				if (childs.size() == 0)
@@ -432,7 +550,7 @@ public class PhysicsManager {
 		public void removeAllChilds() {
 			childs = new ArrayList<BVHNode>();
 		}
-
+  
 		public void computeLongestAxis() {
 			computeMinMax();
 			if (maxPoint[0] - minPoint[0] > maxPoint[1] - minPoint[1])
@@ -440,7 +558,7 @@ public class PhysicsManager {
 			else
 				longestAxis = 1;
 		}
-
+        /** computes the node box left button point position & right up point position  */
 		public void computeMinMax() {
 			if (colliders.size() == 0)
 				return;
@@ -462,7 +580,10 @@ public class PhysicsManager {
 
 			}
 		}
-
+        /**
+		 * 
+		 * @return the node box left button point position & right up point position
+		 */
 		public float[][] getMinMax() {
 			float[][] minMax = { minPoint, maxPoint };
 			return minMax;
