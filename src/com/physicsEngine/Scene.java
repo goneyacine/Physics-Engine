@@ -7,7 +7,7 @@ import com.physicsEngine.components.rendering.SpriteRenderer;
 
 import java.util.*;
 public class Scene {
-    public List<GameObject> gameObjects = new ArrayList<GameObject>();
+    private List<GameObject> gameObjects = new ArrayList<GameObject>();
     public String name;
     
     public Scene(List<GameObject> gameObjects,String name){

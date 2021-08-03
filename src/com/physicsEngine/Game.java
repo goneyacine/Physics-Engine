@@ -55,6 +55,7 @@ public class Game implements Runnable {
 
 	public static void setUp(List<Scene> scenes) {
 		game = new Game(scenes);
+		PhysicsManager.physicsManager().physicsSetUp();
 	}
 
 	public void run() {
@@ -66,6 +67,7 @@ public class Game implements Runnable {
 				runningScene.update();
 				updates++;
 				delta--;
+				PhysicsManager.physicsManager().physicsUpdate();
 			}
 			display();
 			fps++;

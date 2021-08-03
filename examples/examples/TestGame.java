@@ -8,6 +8,7 @@ import com.physicsEngine.Scene;
 import com.physicsEngine.components.physics.colliders.CircleCollider;
 import com.physicsEngine.components.rendering.Cam;
 import com.physicsEngine.components.rendering.SpriteRenderer;
+import com.physicsEngine.physics.PhysicsManager;
 import com.physicsEngine.vectors.Vector2;
 
 import java.util.List;
@@ -38,13 +39,14 @@ public class TestGame {
 		} catch (IOException e) {
             System.out.println(e);
         }
-        for(int i = 1; i < 34;i++)
-           for (int j = 1;j < 34;j++){
+        for(int i = 1; i < 20;i++)
+           for (int j = 1;j < 20;j++){
         GameObject gameObject = new GameObject(null,"BB");
-        //new SpriteRenderer(gameObject,img2);
-        gameObject.transform.position.x = i +(float)Math.random() * 52;
-        gameObject.transform.position.y = j + (float)Math.random() * 52;
-        gameObject.addComponent(new CircleCollider(.5f, Vector2.zero()));
+        new SpriteRenderer(gameObject,img2);
+        gameObject.transform.position.x = i +(float)Math.random() * 60;
+        gameObject.transform.position.y = j + (float)Math.random() * 60;
+        gameObject.addComponent(new CircleCollider(1.5f / 2, Vector2.zero()));
+        sceneObjects.add(gameObject);
            }
         GameObject gameObject = new GameObject(null,"BB");
         new SpriteRenderer(gameObject,img2);
@@ -55,6 +57,7 @@ public class TestGame {
         sceneObjects.add(gameObject1);
         gameObject1.transform.position.x = 333;
         gameObject1.transform.position.y = 22;
+        PhysicsManager.physicsManager().physicsSetUp();
         Game.game.runGame();
     }
     public static BufferedImage testImage(){return img2;}
