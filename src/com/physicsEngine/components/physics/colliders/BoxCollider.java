@@ -13,7 +13,7 @@ public class BoxCollider extends Collider {
 		this.size = size;
 
 		shape = new Box(size.x, size.y);
-		name = "box collider";
+		name = "Box Collider";
 	}
 
 	public void computeMinMax() {

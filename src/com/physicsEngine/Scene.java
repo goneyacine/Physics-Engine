@@ -65,5 +65,8 @@ public class Scene {
     public void destroyGameObject(GameObject gameObject){
     if(gameObjects.remove(gameObject) && Game.game.getRunningScene().equals(this))
     gameObject.onDestroy();
+     
+    if(gameObject.spriteRenderer() != null)
+    Game.game.removeSpriteRenderer(gameObject.spriteRenderer());
     }
 }

@@ -10,6 +10,7 @@ public class Transform extends Component {
 	public float zAngle;
 	public Vector2 scale;
     
+	private Vector2 oldPosition;
 
 	public Transform(Vector2 position, float zAngle, Vector2 scale,GameObject gameObject) {
 		this.position = position;
@@ -18,5 +19,14 @@ public class Transform extends Component {
 		this.gameObject = gameObject;
 		//setting the name of the component
 		name = "Transform";
+		oldPosition = position;
+	}
+	public void update(){
+		if(gameObject.hasCollider){
+		   if(oldPosition.x != position.x && oldPosition.y != position.y){
+			oldPosition = position;
+			gameObject.collider.onMove();
+		   }
+		}
 	}
 }

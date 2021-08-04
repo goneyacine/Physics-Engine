@@ -55,7 +55,6 @@ public class Game implements Runnable {
 
 	public static void setUp(List<Scene> scenes) {
 		game = new Game(scenes);
-		PhysicsManager.physicsManager().physicsSetUp();
 	}
 
 	public void run() {
@@ -124,6 +123,8 @@ public class Game implements Runnable {
 			if (gameObject.hasSpriteRenderer)
 				spriteRenderers.add((SpriteRenderer) gameObject.getComponent("Sprite Renderer"));
 		}
+		runningScene.start();
+		PhysicsManager.physicsManager().physicsSetUp();
 	}
 
 	// this method is used to set the running scene by it's index on the scenes list

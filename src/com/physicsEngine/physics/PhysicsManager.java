@@ -1,4 +1,3 @@
-
 package com.physicsEngine.physics;
 
 import java.util.List;
@@ -25,9 +24,11 @@ public class PhysicsManager {
 
 	public PhysicsManager() {
 		physicsManager = this;
-		bvhTree = new BVHTree(new BVHNode(null, 0));
+		bvhTree = new BVHTree(new BVHNode(null, 0,null));
 	}
-
+    /**
+	 * doing some setup stuff related to physics
+	 */
 	public void physicsSetUp() {
 
 		bvhTree.root.childs = new ArrayList<BVHNode>();
@@ -276,14 +277,14 @@ public class PhysicsManager {
 	 * @param b second collider
 	 */
 	private void checkCollision(Collider a, Collider b) {
-		if (a.name.equals("circle collider")) {
-			if (b.name.equals("circle collider")) {
+		if (a.name.equals("Circle Collider")) {
+			if (b.name.equals("Circle Collider")) {
 				if (Vector2.distance(a.gameObject.transform.position,
 						b.gameObject.transform.position) <= ((CircleCollider) a).radius + ((CircleCollider) b).radius) {
 					a.onCollisionEnter(b);
 					b.onCollisionEnter(a);
 				}
-			} else if (b.name.equals("box collider")) {
+			} else if (b.name.equals("Box Collider")) {
 				if (Vector2.distance(new Vector2(b.getMinMax()[0][0], b.getMinMax()[0][1]),
 						b.gameObject.transform.position) <= ((CircleCollider) a).radius
 						|| Vector2.distance(new Vector2(b.getMinMax()[1][0], b.getMinMax()[1][1]),
@@ -296,8 +297,8 @@ public class PhysicsManager {
 					b.onCollisionEnter(a);
 				}
 			}
-		} else if (a.name.equals("box collider")) {
-			if (b.name.equals("circle collider")) {
+		} else if (a.name.equals("Box Collider")) {
+			if (b.name.equals("Circle Collider")) {
 				if (Vector2.distance(new Vector2(a.getMinMax()[0][0], a.getMinMax()[0][1]),
 						b.gameObject.transform.position) <= ((CircleCollider) b).radius
 						|| Vector2.distance(new Vector2(a.getMinMax()[1][0], a.getMinMax()[1][1]),
@@ -310,7 +311,7 @@ public class PhysicsManager {
 					b.onCollisionEnter(a);
 
 				}
-			} else if (b.name.equals("box collider")) {
+			} else if (b.name.equals("Box Collider")) {
 				if ((a.getMinMax()[0][0] <= b.getMinMax()[1][0] && a.getMinMax()[0][0] >= b.getMinMax()[0][0]
 						&& a.getMinMax()[0][1] <= b.getMinMax()[1][1] && a.getMinMax()[0][1] >= b.getMinMax()[0][1])
 						|| (a.getMinMax()[1][0] <= b.getMinMax()[1][0] && a.getMinMax()[1][0] >= b.getMinMax()[0][0]
@@ -366,18 +367,27 @@ public class PhysicsManager {
 		private int layer;
 		private float[] minPoint;
 		private float[] maxPoint;
-
+        private BVHNode parent;
 		/**
 		 * @implNote if the childs list is null, then it'll not be set as a childs list
 		 *           of this node, the same thing with the colliders list
 		 * @param childs
 		 * @param layer  the layer of the node on the tree (root layer is 0)
+		 * @param parent the parent of this node
 		 */
-		public BVHNode(List<BVHNode> childs, int layer) {
+		public BVHNode(List<BVHNode> childs, int layer,BVHNode parent) {
 			if (childs != null)
 				this.childs = childs;
 
 			this.layer = layer;
+			this.parent = parent;
+		}
+        /**
+		 * 
+		 * @return the parent of this node
+		 */
+		public BVHNode getParent(){
+			return parent;
 		}
 
 		/**
@@ -449,8 +459,8 @@ public class PhysicsManager {
 				computeLongestAxis();
 				sortCollidersList();
 				removeAllChilds();
-				BVHNode child1 = new BVHNode(null, layer + 1);
-				BVHNode child2 = new BVHNode(null, layer + 1);
+				BVHNode child1 = new BVHNode(null, layer + 1,this);
+				BVHNode child2 = new BVHNode(null, layer + 1,this);
 				for (int i = 0; i < colliders.size(); i++) {
 					if (i < (colliders.size() - 1) / 2)
 						child1.addCollider(colliders.get(i));

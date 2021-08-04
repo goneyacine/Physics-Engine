@@ -35,16 +35,55 @@ public class Collider extends Component {
 	 */
 	public void computeMinMax() {
 	}
-     /**
-	  * 
-	  * @return the button left point of the AABB box (min) of this collider & the top right (max)
-	  */
+
+	/**
+	 * 
+	 * @return the button left point of the AABB box (min) of this collider & the
+	 *         top right (max)
+	 */
 	public float[][] getMinMax() {
 		return minMax;
 	}
 
-	public void onCollisionEnter(Collider other){
-		
+	public void onCollisionEnter(Collider other) {
+    gameObject.spriteRenderer().color[0] = 1;
+	}
+
+	/**
+	 * this method is called the object of this collider moves so it restruct the
+	 * BVHTree to feet in with the new data
+	 */
+	public void onMove() {
+		// if the collider object is still inside it's original node then we don't need
+		// to anything except computing the min max
+		if (gameObject.transform.position.x >= bvhNode.getMinMax()[0][0]
+				&& gameObject.transform.position.x <= bvhNode.getMinMax()[1][0]
+				&& gameObject.transform.position.y >= bvhNode.getMinMax()[0][1]
+				&& gameObject.transform.position.y <= bvhNode.getMinMax()[1][1]) {
+			bvhNode.computeMinMax();
+			return;
+		} else {
+        onMoveCheck(bvhNode.getParent());
+		}
+	}
+
+	/**
+	 * this method is used the onMove method to find out what is the best node to
+	 * put this collider in
+	 */
+	private void onMoveCheck(BVHNode node) {
+		if (gameObject.transform.position.x >= node.getMinMax()[0][0]
+				&& gameObject.transform.position.x <= node.getMinMax()[1][0]
+				&& gameObject.transform.position.y >= node.getMinMax()[0][1]
+				&& gameObject.transform.position.y <= node.getMinMax()[1][1]) {
+			node.splitCollidersList();
+			return;
+		} else {
+			if (node.getParent() != null)
+				onMoveCheck(node.getParent());
+			else
+				node.splitCollidersList();
+		}
 	}
 
 }

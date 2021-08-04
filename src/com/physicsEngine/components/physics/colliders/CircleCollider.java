@@ -13,7 +13,7 @@ public class CircleCollider extends Collider {
 		this.radius = radius;
 		this.center = center;
 		shape = new Circle(radius);
-		super.name  = "circle collider";
+		super.name  = "Circle Collider";
 	}
 
 	public void computeMinMax() {

@@ -26,6 +26,9 @@ public class TestComp extends Component {
         else if (InputManager.inputManager().getKey(GLFW_KEY_DOWN))
             Game.game.camera.transform.position.y -= .5f;
 
+        if(InputManager.inputManager().getKeyDown(InputManager.SPACE))
+         System.out.println("FPS = " + Game.game.getFrames() + " ... UPS = " + Game.game.getUpdates());
+
         if (InputManager.inputManager().getKey(GLFW_KEY_RIGHT))
             Game.game.camera.transform.position.x += .5f;
         else if (InputManager.inputManager().getKey(GLFW_KEY_LEFT))
@@ -33,13 +36,11 @@ public class TestComp extends Component {
 
         if (InputManager.inputManager().getMouseDown(InputManager.MOUSE_BUTTON_LEFT)) {
             for (GameObject object : Game.game.getRunningScene().getGameObjects()) {
-                object.transform.position.x += Math.random() * 2 - 1;
-                object.transform.position.y += Math.random() * 2 - 1;
+                object.transform.position.x += Math.random() * 8 - 4;
+                object.transform.position.y += Math.random() * 8 - 4;
                 object.spriteRenderer().color[0] = 0;
-                object.spriteRenderer().color[1] = 0;
             }
-            System.out.println("FPS = " + Game.game.getFrames() + " ... UPS = " + Game.game.getUpdates());
-            PhysicsManager.physicsManager().physicsSetUp();
+           
         }
 
     }

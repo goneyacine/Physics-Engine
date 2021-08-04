@@ -2,6 +2,7 @@
 package com.physicsEngine;
 
 import com.physicsEngine.components.*;
+import com.physicsEngine.components.physics.colliders.Collider;
 import com.physicsEngine.components.rendering.SpriteRenderer;
 import com.physicsEngine.vectors.*;
 import java.util.*;
@@ -13,6 +14,9 @@ public class GameObject {
     private List<Component> components = new ArrayList<Component>();
     public boolean hasSpriteRenderer = false;
     private SpriteRenderer spriteRenderer;
+    public boolean hasCollider = false;
+    public Collider collider;
+
     public GameObject(Transform transform, String name) {
         //setting up the tranform component so we can position the gameobject
         if (transform == null)
@@ -49,10 +53,13 @@ public class GameObject {
           return;
           }
        
-       if(component.name != null)   
+       if(component.name != null){   
        if(component.name.equals("Sprite Renderer"))
        spriteRenderer = (SpriteRenderer)component;
-
+       else if(component.name.equals("Circle Collider") || component.name.equals("Box Collider"))
+       collider = (Collider)component;
+       hasCollider = true;
+       }
       components.add(component);
       component.gameObject = this;
       component.onEnable();
@@ -74,6 +81,9 @@ public class GameObject {
      Game.game.spriteRenderers.remove(comp);
      
      components.remove(comp);
+
+     if(getComponent("Box Collider") == null && getComponent("Circle Collider") == null)
+     hasCollider = false;
 
   }
   /**
