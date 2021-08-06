@@ -39,15 +39,7 @@ public class TestGame {
 		} catch (IOException e) {
             System.out.println(e);
         }
-        for(int i = 1; i < 10;i++)
-           for (int j = 1;j < 10;j++){
-        GameObject gameObject = new GameObject(null,"BB");
-        new SpriteRenderer(gameObject,img2);
-        gameObject.transform.position.x = i +(float)Math.random() * 30;
-        gameObject.transform.position.y = j + (float)Math.random() * 30;
-        gameObject.addComponent(new CircleCollider(1.5f / 2, Vector2.zero()));
-        sceneObjects.add(gameObject);
-           }
+        
         GameObject gameObject = new GameObject(null,"BB");
         new SpriteRenderer(gameObject,img2);
         sceneObjects.add(gameObject);
@@ -57,6 +49,7 @@ public class TestGame {
         sceneObjects.add(gameObject1);
         gameObject1.transform.position.x = 333;
         gameObject1.transform.position.y = 22;
+        gameObject.addComponent(new CircleCollider(1.5f / 2, Vector2.zero()));
         PhysicsManager.physicsManager().physicsSetUp();
         Game.game.runGame();
     }

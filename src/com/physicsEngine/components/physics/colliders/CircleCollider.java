@@ -2,6 +2,7 @@
 package com.physicsEngine.components.physics.colliders;
 
 import com.physicsEngine.vectors.*;
+import com.physicsEngine.components.*;
 import com.physicsEngine.shapes.*;
 
 public class CircleCollider extends Collider {
@@ -13,16 +14,16 @@ public class CircleCollider extends Collider {
 		this.radius = radius;
 		this.center = center;
 		shape = new Circle(radius);
-		super.name  = "Circle Collider";
+		setName("Circle Collider");
 	}
 
 	public void computeMinMax() {
-		// computing the min point position
-		minMax[0][0] = gameObject.transform.position.x - radius * gameObject.transform.scale.x  + center.x;
-		minMax[0][1] = gameObject.transform.position.y - radius * gameObject.transform.scale.y  + center.y;
-		// computing the max point positioy
-		minMax[1][0] = gameObject.transform.position.x + radius * gameObject.transform.scale.x  + center.x;
-		minMax[1][1] = gameObject.transform.position.y + radius * gameObject.transform.scale.y  + center.y;
+	 	// computing the min point position
+		 minMax[0][0] = gameObject().transform.position.x - radius * gameObject().transform.scale.x  + center.x;
+		 minMax[0][1] = gameObject().transform.position.y - radius * gameObject().transform.scale.y  + center.y;
+		 // computing the max point positioy
+		 minMax[1][0] = gameObject().transform.position.x + radius * gameObject().transform.scale.x  + center.x;
+		 minMax[1][1] = gameObject().transform.position.y + radius * gameObject().transform.scale.y  + center.y;
 	}
 
 }

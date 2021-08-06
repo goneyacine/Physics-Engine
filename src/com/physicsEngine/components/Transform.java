@@ -16,16 +16,16 @@ public class Transform extends Component {
 		this.position = position;
 		this.zAngle = zAngle;
 		this.scale = scale;
-		this.gameObject = gameObject;
+		setGameObject(gameObject);
 		//setting the name of the component
-		name = "Transform";
+		setName("Transform");
 		oldPosition = position;
 	}
 	public void update(){
-		if(gameObject.hasCollider){
+		if(gameObject().hasCollider){
 		   if(oldPosition.x != position.x && oldPosition.y != position.y){
 			oldPosition = position;
-			gameObject.collider.onMove();
+			gameObject().collider.onMove();
 		   }
 		}
 	}

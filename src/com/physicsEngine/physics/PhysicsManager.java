@@ -277,41 +277,41 @@ public class PhysicsManager {
 	 * @param b second collider
 	 */
 	private void checkCollision(Collider a, Collider b) {
-		if (a.name.equals("Circle Collider")) {
-			if (b.name.equals("Circle Collider")) {
-				if (Vector2.distance(a.gameObject.transform.position,
-						b.gameObject.transform.position) <= ((CircleCollider) a).radius + ((CircleCollider) b).radius) {
+		if (a.getName().equals("Circle Collider")) {
+			if (b.getName().equals("Circle Collider")) {
+				if (Vector2.distance(a.gameObject().transform.position,
+						b.gameObject().transform.position) <= ((CircleCollider) a).radius + ((CircleCollider) b).radius) {
 					a.onCollisionEnter(b);
 					b.onCollisionEnter(a);
 				}
-			} else if (b.name.equals("Box Collider")) {
+			} else if (b.getName().equals("Box Collider")) {
 				if (Vector2.distance(new Vector2(b.getMinMax()[0][0], b.getMinMax()[0][1]),
-						b.gameObject.transform.position) <= ((CircleCollider) a).radius
+						b.gameObject().transform.position) <= ((CircleCollider) a).radius
 						|| Vector2.distance(new Vector2(b.getMinMax()[1][0], b.getMinMax()[1][1]),
-								b.gameObject.transform.position) <= ((CircleCollider) a).radius
+								b.gameObject().transform.position) <= ((CircleCollider) a).radius
 						|| Vector2.distance(new Vector2(b.getMinMax()[1][0], b.getMinMax()[0][1]),
-								b.gameObject.transform.position) <= ((CircleCollider) a).radius
+								b.gameObject().transform.position) <= ((CircleCollider) a).radius
 						|| Vector2.distance(new Vector2(b.getMinMax()[0][0], b.getMinMax()[1][1]),
-								b.gameObject.transform.position) <= ((CircleCollider) a).radius) {
+								b.gameObject().transform.position) <= ((CircleCollider) a).radius) {
 					a.onCollisionEnter(b);
 					b.onCollisionEnter(a);
 				}
 			}
-		} else if (a.name.equals("Box Collider")) {
-			if (b.name.equals("Circle Collider")) {
+		} else if (a.getName().equals("Box Collider")) {
+			if (b.getName().equals("Circle Collider")) {
 				if (Vector2.distance(new Vector2(a.getMinMax()[0][0], a.getMinMax()[0][1]),
-						b.gameObject.transform.position) <= ((CircleCollider) b).radius
+						b.gameObject().transform.position) <= ((CircleCollider) b).radius
 						|| Vector2.distance(new Vector2(a.getMinMax()[1][0], a.getMinMax()[1][1]),
-								b.gameObject.transform.position) <= ((CircleCollider) b).radius
+								b.gameObject().transform.position) <= ((CircleCollider) b).radius
 						|| Vector2.distance(new Vector2(a.getMinMax()[1][0], a.getMinMax()[0][1]),
-								b.gameObject.transform.position) <= ((CircleCollider) b).radius
+								b.gameObject().transform.position) <= ((CircleCollider) b).radius
 						|| Vector2.distance(new Vector2(a.getMinMax()[0][0], a.getMinMax()[1][1]),
-								b.gameObject.transform.position) <= ((CircleCollider) b).radius) {
+								b.gameObject().transform.position) <= ((CircleCollider) b).radius) {
 					a.onCollisionEnter(b);
 					b.onCollisionEnter(a);
 
 				}
-			} else if (b.name.equals("Box Collider")) {
+			} else if (b.getName().equals("Box Collider")) {
 				if ((a.getMinMax()[0][0] <= b.getMinMax()[1][0] && a.getMinMax()[0][0] >= b.getMinMax()[0][0]
 						&& a.getMinMax()[0][1] <= b.getMinMax()[1][1] && a.getMinMax()[0][1] >= b.getMinMax()[0][1])
 						|| (a.getMinMax()[1][0] <= b.getMinMax()[1][0] && a.getMinMax()[1][0] >= b.getMinMax()[0][0]
@@ -365,8 +365,8 @@ public class PhysicsManager {
 		private List<Collider> colliders = new ArrayList<Collider>();
 		private List<BVHNode> childs = new ArrayList<BVHNode>();
 		private int layer;
-		private float[] minPoint;
-		private float[] maxPoint;
+		private float[] minPoint = new float[2];
+		private float[] maxPoint = new float[2];
         private BVHNode parent;
 		/**
 		 * @implNote if the childs list is null, then it'll not be set as a childs list
@@ -401,7 +401,7 @@ public class PhysicsManager {
 		 * adds a collider to the colliders list of BVHNode object
 		 * @param collider
 		 */
-		private void addCollider(Collider collider) {
+		public void addCollider(Collider collider) {
 			if (!colliders.contains(collider))
 				colliders.add(collider);
 
@@ -506,8 +506,8 @@ public class PhysicsManager {
 		private int partition(List<Collider> list, int low, int high) {
 
 			// pivot
-			float pivot = longestAxis == 0 ? list.get(high).gameObject.transform.position.x
-					: list.get(high).gameObject.transform.position.y;
+			float pivot = longestAxis == 0 ? list.get(high).gameObject().transform.position.x
+					: list.get(high).gameObject().transform.position.y;
 
 			int i = (low - 1);
 
@@ -515,8 +515,8 @@ public class PhysicsManager {
 
 				// If current element is smaller
 				// than the pivot
-				if ((list.get(j).gameObject.transform.position.x < pivot && longestAxis == 0)
-						|| (list.get(j).gameObject.transform.position.y < pivot && longestAxis == 1)) {
+				if ((list.get(j).gameObject().transform.position.x < pivot && longestAxis == 0)
+						|| (list.get(j).gameObject().transform.position.y < pivot && longestAxis == 1)) {
 
 					// Increment index of
 					// smaller element

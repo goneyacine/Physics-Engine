@@ -31,7 +31,7 @@ public class SpriteRenderer extends Component {
   private float worldSpaceRaduis;
 
   public SpriteRenderer(GameObject gameObject, BufferedImage sprite) {
-    name = "Sprite Renderer";
+    setName("Sprite Renderer");
     this.gameObject = gameObject;
     this.transform = gameObject.transform;
     Game.game.spriteRenderers.add(this);

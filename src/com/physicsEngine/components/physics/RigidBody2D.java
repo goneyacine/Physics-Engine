@@ -22,7 +22,7 @@ public class RigidBody2D extends Component {
     this.collider = collider;
     this.mass = mass;
 
-    name = "RigidBody2D";
+    setName("RigidBody2D");
   }
 
   //this method computes the moment of inertia of different shapes

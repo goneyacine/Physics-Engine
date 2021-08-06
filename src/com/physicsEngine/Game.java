@@ -60,10 +60,18 @@ public class Game implements Runnable {
 	public void run() {
 		while (true) {
 			long now = System.nanoTime();
-		delta = (now - lastTime) / ns;
-		lastTime = System.nanoTime();
+			delta = (now - lastTime) / ns;
+			lastTime = System.nanoTime();
 			if (delta >= 1) {
 				runningScene.update();
+				for (GameObject obj : runningScene.gameObjectsShouldAdd)
+					runningScene.getGameObjects().add(obj);
+
+				for (GameObject obj : runningScene.gameObjectsShouldRemove)
+					runningScene.getGameObjects().remove(obj);
+
+				runningScene.gameObjectsShouldAdd = new ArrayList<GameObject>();
+				runningScene.gameObjectsShouldRemove = new ArrayList<GameObject>();
 				updates++;
 				delta--;
 				PhysicsManager.physicsManager().physicsUpdate();

@@ -5,8 +5,8 @@ import com.physicsEngine.GameObject;
 
 public class Component {
 	private boolean isEnabled = true;
-	public String name;
-	public GameObject gameObject;
+	private String name;
+	private GameObject gameObject;
 
 	public boolean isEnabled() {
 		return isEnabled;
@@ -46,4 +46,17 @@ public class Component {
 	public void onDisbale() {}
     /** this function is called when a compoenent is removed from it's parent gameObject or when it's parent is destroyed */
 	public void onDestroy() {}
+
+	public void setName(String name){
+	this.name = name;
+	}
+	public String getName(){
+	return name;
+	}
+	public void setGameObject(GameObject gameObject){
+		this.gameObject = gameObject;
+	}
+	public GameObject gameObject(){
+		return gameObject;
+	}
 }

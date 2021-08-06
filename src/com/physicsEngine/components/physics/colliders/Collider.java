@@ -2,6 +2,7 @@
 package com.physicsEngine.components.physics.colliders;
 
 import com.physicsEngine.shapes.*;
+import com.physicsEngine.GameObject;
 import com.physicsEngine.components.*;
 import com.physicsEngine.physics.PhysicsManager;
 import com.physicsEngine.physics.PhysicsManager.BVHNode;
@@ -9,7 +10,6 @@ import com.physicsEngine.physics.PhysicsManager.BVHNode;
 public class Collider extends Component {
 
 	public Shape shape;
-	public String name;
 	public BVHNode bvhNode;
 	/**
 	 * min is the button left point of the AABB box of this collider & max is the
@@ -46,7 +46,7 @@ public class Collider extends Component {
 	}
 
 	public void onCollisionEnter(Collider other) {
-    gameObject.spriteRenderer().color[0] = 1;
+    gameObject().spriteRenderer().color[0] = 1;
 	}
 
 	/**
@@ -56,10 +56,10 @@ public class Collider extends Component {
 	public void onMove() {
 		// if the collider object is still inside it's original node then we don't need
 		// to anything except computing the min max
-		if (gameObject.transform.position.x >= bvhNode.getMinMax()[0][0]
-				&& gameObject.transform.position.x <= bvhNode.getMinMax()[1][0]
-				&& gameObject.transform.position.y >= bvhNode.getMinMax()[0][1]
-				&& gameObject.transform.position.y <= bvhNode.getMinMax()[1][1]) {
+		if (gameObject().transform.position.x >= bvhNode.getMinMax()[0][0]
+				&& gameObject().transform.position.x <= bvhNode.getMinMax()[1][0]
+				&& gameObject().transform.position.y >= bvhNode.getMinMax()[0][1]
+				&& gameObject().transform.position.y <= bvhNode.getMinMax()[1][1]) {
 			bvhNode.computeMinMax();
 			return;
 		} else {
@@ -72,10 +72,10 @@ public class Collider extends Component {
 	 * put this collider in
 	 */
 	private void onMoveCheck(BVHNode node) {
-		if (gameObject.transform.position.x >= node.getMinMax()[0][0]
-				&& gameObject.transform.position.x <= node.getMinMax()[1][0]
-				&& gameObject.transform.position.y >= node.getMinMax()[0][1]
-				&& gameObject.transform.position.y <= node.getMinMax()[1][1]) {
+		if (gameObject().transform.position.x >= node.getMinMax()[0][0]
+				&& gameObject().transform.position.x <= node.getMinMax()[1][0]
+				&& gameObject().transform.position.y >= node.getMinMax()[0][1]
+				&& gameObject().transform.position.y <= node.getMinMax()[1][1]) {
 			node.splitCollidersList();
 			return;
 		} else {
@@ -85,5 +85,4 @@ public class Collider extends Component {
 				node.splitCollidersList();
 		}
 	}
-
 }

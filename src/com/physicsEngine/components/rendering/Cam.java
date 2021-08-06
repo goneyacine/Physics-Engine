@@ -22,7 +22,7 @@ public class Cam extends Component {
    * @param acpectRatio the camera view acpectRatio
    */
   public Cam(GameObject gameObject, float size, float[] acpectRatio) {
-    this.gameObject =  gameObject;
+    setGameObject(gameObject);
     this.transform = gameObject.transform;
     this.acpectRatio = acpectRatio;
     this.size = size;
