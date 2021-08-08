@@ -4,7 +4,7 @@ package examples;
 import com.physicsEngine.Game;
 import com.physicsEngine.GameObject;
 import com.physicsEngine.Scene;
-
+import com.physicsEngine.components.physics.RigidBody2D;
 import com.physicsEngine.components.physics.colliders.CircleCollider;
 import com.physicsEngine.components.rendering.Cam;
 import com.physicsEngine.components.rendering.SpriteRenderer;
@@ -49,7 +49,10 @@ public class TestGame {
         sceneObjects.add(gameObject1);
         gameObject1.transform.position.x = 333;
         gameObject1.transform.position.y = 22;
-        gameObject.addComponent(new CircleCollider(1.5f / 2, Vector2.zero()));
+        gameObject1.transform.scale.x = 3;
+        gameObject1.transform.scale.y = 3;
+        gameObject.addComponent(new CircleCollider(4.5f, Vector2.zero()));
+        gameObject.addComponent(new RigidBody2D(gameObject, gameObject.collider, 4));
         PhysicsManager.physicsManager().physicsSetUp();
         Game.game.runGame();
     }

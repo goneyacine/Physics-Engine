@@ -3,6 +3,7 @@ package examples;
 import com.physicsEngine.*;
 import com.physicsEngine.components.*;
 import com.physicsEngine.physics.PhysicsManager;
+import com.physicsEngine.components.physics.RigidBody2D;
 import com.physicsEngine.components.physics.colliders.CircleCollider;
 import com.physicsEngine.components.rendering.Cam;
 import com.physicsEngine.components.rendering.SpriteRenderer;
@@ -45,17 +46,19 @@ public class TestComp extends Component {
         else if (InputManager.inputManager().getKey(GLFW_KEY_LEFT))
             gameObject().transform.position.x -= .5f;
            
-        if(InputManager.inputManager().getKeyDown(InputManager.A)){
+        if(InputManager.inputManager().getKey(InputManager.A)){
             GameObject gameObject = new GameObject(null,"BB");
             new SpriteRenderer(gameObject,img2);
-            gameObject.transform.position.x = (float)Math.random() * 300 - 150;
-            gameObject.transform.position.y = (float)Math.random() * 100 - 50;
-            gameObject.transform.scale.x = 3;
-            gameObject.transform.scale.y = 3;
-            gameObject.addComponent(new CircleCollider(4.5f, Vector2.zero()));
+            gameObject.transform.position.x = (float)Math.random() * 30 - 15;
+            gameObject.transform.position.y = (float)Math.random() * 30 - 15;
+            gameObject.transform.scale.x = 1;
+            gameObject.transform.scale.y = 1;
+            gameObject.addComponent(new CircleCollider(1.44f/2, Vector2.zero()));
+            gameObject.addComponent(new Comp());
             Game.game.getRunningScene().addGameObejct(gameObject);
         }
 
+      
     }
 
 }

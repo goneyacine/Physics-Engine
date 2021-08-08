@@ -45,11 +45,11 @@ public class RigidBody2D extends Component {
 
     //computing the angular velocity & acceleration
     angularAcceleration = torque / momentOfInertia;
-    angularVelocity += angularAcceleration * PhysicsManager.getDeltaTime();
+    angularVelocity += angularAcceleration;
 
   }
   public void applyAngularVelocity() {
-
+  transform.zAngle += angularVelocity;
   }
 
 }

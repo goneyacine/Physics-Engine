@@ -24,9 +24,10 @@ public class PhysicsManager {
 
 	public PhysicsManager() {
 		physicsManager = this;
-		bvhTree = new BVHTree(new BVHNode(null, 0,null));
+		bvhTree = new BVHTree(new BVHNode(null, 0, null));
 	}
-    /**
+
+	/**
 	 * doing some setup stuff related to physics
 	 */
 	public void physicsSetUp() {
@@ -280,7 +281,8 @@ public class PhysicsManager {
 		if (a.getName().equals("Circle Collider")) {
 			if (b.getName().equals("Circle Collider")) {
 				if (Vector2.distance(a.gameObject().transform.position,
-						b.gameObject().transform.position) <= ((CircleCollider) a).radius + ((CircleCollider) b).radius) {
+						b.gameObject().transform.position) <= ((CircleCollider) a).radius
+								+ ((CircleCollider) b).radius) {
 					a.onCollisionEnter(b);
 					b.onCollisionEnter(a);
 				}
@@ -367,7 +369,8 @@ public class PhysicsManager {
 		private int layer;
 		private float[] minPoint = new float[2];
 		private float[] maxPoint = new float[2];
-        private BVHNode parent;
+		private BVHNode parent;
+
 		/**
 		 * @implNote if the childs list is null, then it'll not be set as a childs list
 		 *           of this node, the same thing with the colliders list
@@ -375,18 +378,19 @@ public class PhysicsManager {
 		 * @param layer  the layer of the node on the tree (root layer is 0)
 		 * @param parent the parent of this node
 		 */
-		public BVHNode(List<BVHNode> childs, int layer,BVHNode parent) {
+		public BVHNode(List<BVHNode> childs, int layer, BVHNode parent) {
 			if (childs != null)
 				this.childs = childs;
 
 			this.layer = layer;
 			this.parent = parent;
 		}
-        /**
+
+		/**
 		 * 
 		 * @return the parent of this node
 		 */
-		public BVHNode getParent(){
+		public BVHNode getParent() {
 			return parent;
 		}
 
@@ -397,8 +401,10 @@ public class PhysicsManager {
 		public List<Collider> getColliders() {
 			return colliders;
 		}
-        /**
+
+		/**
 		 * adds a collider to the colliders list of BVHNode object
+		 * 
 		 * @param collider
 		 */
 		public void addCollider(Collider collider) {
@@ -408,8 +414,10 @@ public class PhysicsManager {
 			collider.bvhNode = this;
 			computeLongestAxis();
 		}
-        /**
+
+		/**
 		 * remove a collider from the colliders list of BVHNode object
+		 * 
 		 * @param collider
 		 */
 		public void removeCollider(Collider collider) {
@@ -417,22 +425,25 @@ public class PhysicsManager {
 
 			computeLongestAxis();
 		}
-        /**
+
+		/**
 		 * romoves all the colliders from the colliders list of BVHNode object
 		 */
 		public void removeAllColliders() {
 			colliders = new ArrayList<Collider>();
 		}
-        /**
+
+		/**
 		 *
 		 * @return the BVHNode childs of this node
 		 */
 		public List<BVHNode> getchilds() {
 			return childs;
 		}
-        
+
 		/**
 		 * gets all the collider from the child nodes & make the childs list empty
+		 * 
 		 * @param parent
 		 */
 		public void scrapeColliders(BVHNode parent) {
@@ -446,32 +457,40 @@ public class PhysicsManager {
 			}
 			parent.childs = new ArrayList<BVHNode>();
 		}
-        /** splits the node into two parts */
+
+		/** splits the node into two parts */
 		public void splitCollidersList() {
 			if (colliders.size() == 0) {
 				if (childs.size() == 0)
 					return;
-				else
-					scrapeColliders(this);
 			}
-
-			if (colliders.size() >= 4) {
+			scrapeColliders(this);
+			if (colliders.size() > 3) {
 				computeLongestAxis();
 				sortCollidersList();
 				removeAllChilds();
-				BVHNode child1 = new BVHNode(null, layer + 1,this);
-				BVHNode child2 = new BVHNode(null, layer + 1,this);
-				for (int i = 0; i < colliders.size(); i++) {
-					if (i < (colliders.size() - 1) / 2)
-						child1.addCollider(colliders.get(i));
-					else
-						child2.addCollider(colliders.get(i));
+				List<BVHNode> newChilds = new ArrayList<BVHNode>();
+				float[] currentProjection = { colliders.get(0).getMinMax()[0][longestAxis],
+						colliders.get(0).getMinMax()[1][longestAxis] };
+				newChilds.add(new BVHNode(null, layer + 1, this));
+				newChilds.get(0).addCollider(colliders.get(0));
+				addChild(newChilds.get(0));
+				for (int i = 1; i < colliders.size(); i++) {
+					if (currentProjection[0] <= colliders.get(i).getMinMax()[0][longestAxis]) {
+						if (currentProjection[1] >= colliders.get(i).getMinMax()[1][longestAxis]) {
+							currentProjection[0] = colliders.get(i).getMinMax()[0][longestAxis];
+							currentProjection[1] = colliders.get(i).getMinMax()[1][longestAxis];
+						}
+						newChilds.get(newChilds.size() - 1).addCollider(colliders.get(i));
+					} else {
+						addChild(newChilds.get(newChilds.size() -1));
+						newChilds.get(newChilds.size() - 1).splitCollidersList();
+						newChilds.add(new BVHNode(null, layer + 1, this));
+						newChilds.get(newChilds.size() - 1).addCollider(colliders.get(i));
+						currentProjection[0] = colliders.get(i).getMinMax()[0][longestAxis];
+						currentProjection[1] = colliders.get(i).getMinMax()[1][longestAxis];
+					}
 				}
-
-				child1.splitCollidersList();
-				child2.splitCollidersList();
-				addChild(child1);
-				addChild(child2);
 				colliders = new ArrayList<Collider>();
 			} else
 				return;
@@ -506,8 +525,7 @@ public class PhysicsManager {
 		private int partition(List<Collider> list, int low, int high) {
 
 			// pivot
-			float pivot = longestAxis == 0 ? list.get(high).gameObject().transform.position.x
-					: list.get(high).gameObject().transform.position.y;
+			float pivot = list.get(high).gameObject().collider.getMinMax()[0][longestAxis];
 
 			int i = (low - 1);
 
@@ -515,8 +533,7 @@ public class PhysicsManager {
 
 				// If current element is smaller
 				// than the pivot
-				if ((list.get(j).gameObject().transform.position.x < pivot && longestAxis == 0)
-						|| (list.get(j).gameObject().transform.position.y < pivot && longestAxis == 1)) {
+				if (list.get(j).gameObject().collider.getMinMax()[0][longestAxis] < pivot) {
 
 					// Increment index of
 					// smaller element
@@ -560,7 +577,7 @@ public class PhysicsManager {
 		public void removeAllChilds() {
 			childs = new ArrayList<BVHNode>();
 		}
-  
+
 		public void computeLongestAxis() {
 			computeMinMax();
 			if (maxPoint[0] - minPoint[0] > maxPoint[1] - minPoint[1])
@@ -568,7 +585,10 @@ public class PhysicsManager {
 			else
 				longestAxis = 1;
 		}
-        /** computes the node box left button point position & right up point position  */
+
+		/**
+		 * computes the node box left button point position & right up point position
+		 */
 		public void computeMinMax() {
 			if (colliders.size() == 0)
 				return;
@@ -590,7 +610,8 @@ public class PhysicsManager {
 
 			}
 		}
-        /**
+
+		/**
 		 * 
 		 * @return the node box left button point position & right up point position
 		 */
